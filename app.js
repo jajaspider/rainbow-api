@@ -3,14 +3,38 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mongoose = require('mongoose');
+const yaml = require('js-yaml');
+const fs = require('fs');
+const _ = require('lodash');
 
-var indexRouter = require('./routes/index');
+let configPath = path.join(process.cwd(), 'config', 'rainbow.develop.yaml');
+let config = yaml.load(fs.readFileSync(configPath));
+
+let indexRouter = require('./src/routes/index');
 // var usersRouter = require('./routes/users');
 
 var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
+
+let mongo = _.get(config, 'mongo');
+let mongoIp = _.get(mongo, 'ip');
+let mongoPort = _.get(mongo, 'port');
+let mongoDatabase = _.get(mongo, 'database');
+
+mongoose
+  .connect(`mongodb://${mongoIp}:${mongoPort}/${mongoDatabase}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log('Successfully connected to mongodb'))
+  .catch(e => {
+    console.error(e);
+    throw new Error('mongo DB connection fail');
+  });
+
 app.use(express.urlencoded({
   extended: false
 }));
