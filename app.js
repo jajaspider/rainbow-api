@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const _ = require('lodash');
+const http = require('http');
 
 let configPath = path.join(process.cwd(), 'config', 'rainbow.develop.yaml');
 let config = yaml.load(fs.readFileSync(configPath));
@@ -112,7 +113,6 @@ function onListening() {
   var bind = typeof addr === 'string' ?
     'pipe ' + addr :
     'port ' + addr.port;
-  debug('Listening on ' + bind);
 }
 
 module.exports = app;
