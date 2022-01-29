@@ -12,7 +12,9 @@ async function getInfo(name) {
 
     let errorInfo = html('#lostark-wrapper > div > main > div > div.profile-ingame > div > span:nth-child(1)').text();
     if (errorInfo) {
-        return errorInfo;
+        return {
+            errorInfo
+        };
     }
 
     let server = html('#lostark-wrapper > div > main > div > div.profile-character-info > span.profile-character-info__server').text();

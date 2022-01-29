@@ -14,12 +14,13 @@ router.get('/info/:name', async function (req, res, next) {
         resPayload.payload = {
             message: '결과가 없습니다'
         }
-    }
-    else if (_.get(character, 'errorInfo')) {
+        return res.json(resPayload);
+    } else if (_.get(character, 'errorInfo')) {
         resPayload.isSuccess = false;
         resPayload.payload = {
             message: _.get(character, 'errorInfo'),
         }
+        return res.json(resPayload);
     }
 
     resPayload.isSuccess = true;
