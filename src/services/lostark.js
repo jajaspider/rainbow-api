@@ -77,6 +77,32 @@ async function getInfo(name) {
     return character;
 }
 
+async function getCrystal() {
+    // 2022. 01. 31
+    // 웹 접근 전 기존 크리스탈을 업데이트했던 시간을 디비에서 확인후, 최소 5분이상이 지나야 새로운 데이터를 불러와서 넣어주는 형태로 변경 해야함.
+
+    let result = await axios.get('https://loatool.taeu.kr/lospi');
+    if (result.status != 200) {
+        return {
+            errorInfo: "접근 실패"
+        };
+    }
+
+    let html = cheerio.load(result.data);
+
+    let regex = /[^0-9]/g;
+    let buyPrice = html('#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div > div > div:nth-child(1) > div > div > div.v-card__text.text-center > div:nth-child(2) > div:nth-child(1) > span').text();
+    buyPrice = buyPrice.replace(regex, "");
+    let sellPrice = html('#app > div > main > div > div > div > div > div.d-flex.flex-row.justify-center > div > div > div:nth-child(1) > div > div > div.v-card__text.text-center > div:nth-child(2) > div:nth-child(2) > span').text();
+    sellPrice = sellPrice.replace(regex, "");
+
+    return {
+        buyPrice,
+        sellPrice
+    };
+}
+
 module.exports = {
-    getInfo
+    getInfo,
+    getCrystal
 };
