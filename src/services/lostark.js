@@ -102,7 +102,41 @@ async function getCrystal() {
     };
 }
 
+async function getExpandCharacter(name) {
+    let result = await axios.get(`https://lostark.game.onstove.com/Profile/Character/${encodeURIComponent(name)}`);
+    if (result.status != 200) {
+        return {
+            errorInfo: "접근 실패"
+        };
+    }
+
+    let html = cheerio.load(result.data);
+
+    let serverList = html('#expand-character-list > strong');
+    let expandCharacter = [];
+
+    for (let i = 0; i < serverList.length; i += 1) {
+        let server = _.get(serverList[i], 'children.0.data');
+        server = server.replace('@', '');
+
+        let characterList = [];
+        let characters = html(`#expand-character-list > ul:nth-child(${3+i*2}) > li > span > button > span`);
+
+        for (let character of characters) {
+            characterList.push(_.get(character, 'children.0.data'));
+        }
+
+        expandCharacter.push({
+            server,
+            characterList
+        });
+    }
+
+    return expandCharacter;
+}
+
 module.exports = {
     getInfo,
-    getCrystal
+    getCrystal,
+    getExpandCharacter
 };

@@ -51,4 +51,25 @@ router.get('/crystal/', async function (req, res, next) {
     return res.json(resPayload);
 });
 
+router.get('/expand/:name', async function (req, res, next) {
+    let resPayload = {
+        isSuccess: false,
+    };
+
+    let result = await lostarkService.getExpandCharacter(req.params.name);
+    if (_.get(result, 'errorInfo')) {
+        resPayload.isSuccess = false;
+        resPayload.payload = {
+            message: _.get(result, 'errorInfo')
+        }
+        return res.json(resPayload);
+    }
+
+    resPayload.isSuccess = true;
+    resPayload.payload = {
+        result
+    }
+    return res.json(resPayload);
+});
+
 module.exports = router;
