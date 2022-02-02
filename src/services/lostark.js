@@ -3,6 +3,9 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 async function getInfo(name) {
+    // 2022. 02. 02
+    // 캐릭터 데이터를 뽑아오기전에 마지막으로 업데이트한시간을 찾아서 5분내면 db데이터를 return 그게아니라면 업데이트
+
     let result = await axios.get(`https://lostark.game.onstove.com/Profile/Character/${encodeURIComponent(name)}`);
     if (result.status != 200) {
         return {};
@@ -22,10 +25,35 @@ async function getInfo(name) {
     let nickname = html('#lostark-wrapper > div > main > div > div.profile-character-info > span.profile-character-info__name').text();
     let job = html('#lostark-wrapper > div > main > div > div.profile-character-info > img');
     job = _.get(job, '0.attribs.alt');
+    let expeditionLevel = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.level-info > div.level-info__expedition > span:nth-child(2)').text();
     let fightLevel = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.level-info > div.level-info__item > span:nth-child(2)').text();
     let itemLevel = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.level-info2 > div.level-info2__expedition > span:nth-child(2)').text();
     let attack = html('#profile-ability > div.profile-ability-basic > ul > li:nth-child(1) > span:nth-child(2)').text();
     let health = html('#profile-ability > div.profile-ability-basic > ul > li:nth-child(2) > span:nth-child(2)').text();
+    let title = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.game-info > div.game-info__title > span:nth-child(2)').text();
+    let pvp = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.game-info > div.level-info__pvp > span:nth-child(2)').text();
+    let skillDatas = html('#profile-skill > div.profile-skill-battle > div.profile-skill__list > div > a');
+    let skill = [];
+    for (let skillData of skillDatas) {
+        if (_.get(skillData, 'attribs.class') == 'button button--profile-skill') {
+            let skillObj = JSON.parse(_.get(skillData, 'attribs.data-skill'));
+
+            let tripod = [];
+            for (let i = 0; i < skillObj.selectedTripodTier.length; i += 1) {
+                let result = _.find(skillObj.tripodList, { level: i, slot: skillObj.selectedTripodTier[i] });
+                if (result) {
+                    tripod.push(result);
+                }
+            }
+
+            skill.push({
+                name: skillObj.name,
+                level: skillObj.level,
+                slotIcon: skillObj.slotIcon,
+                tripod,
+            })
+        }
+    }
 
     let specifics = html('#profile-ability > div.profile-ability-battle > ul > li > span');
     let specificList = [];
@@ -71,7 +99,9 @@ async function getInfo(name) {
         specificList,
         guildName,
         engraveList,
-        cardList
+        cardList,
+        expeditionLevel,
+        title
     }
 
     return character;
@@ -120,7 +150,7 @@ async function getExpandCharacter(name) {
         server = server.replace('@', '');
 
         let characterList = [];
-        let characters = html(`#expand-character-list > ul:nth-child(${3+i*2}) > li > span > button > span`);
+        let characters = html(`#expand-character-list > ul:nth-child(${3 + i * 2}) > li > span > button > span`);
 
         for (let character of characters) {
             characterList.push(_.get(character, 'children.0.data'));
