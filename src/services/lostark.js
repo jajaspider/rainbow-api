@@ -40,7 +40,10 @@ async function getInfo(name) {
 
             let tripod = [];
             for (let i = 0; i < skillObj.selectedTripodTier.length; i += 1) {
-                let result = _.find(skillObj.tripodList, { level: i, slot: skillObj.selectedTripodTier[i] });
+                let result = _.find(skillObj.tripodList, {
+                    level: i,
+                    slot: skillObj.selectedTripodTier[i]
+                });
                 if (result) {
                     tripod.push(result);
                 }
@@ -54,6 +57,21 @@ async function getInfo(name) {
             })
         }
     }
+
+    let jewelDetail = [];
+    let jewels = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li > p');
+    for (let jewel of jewels) {
+        jewelDetail.push(`${_.get(jewel, 'children.0.children.0.data')}${_.get(jewel, 'children.1.data')}`);
+    }
+
+    // 수집물의 정보를 획득하는 메소르를 post로 날려서 확인해야함
+    // 2022.02.05 수정예정
+
+    // let collections = html('#lui-tab1-1 > div > div.collection-list > div > p');
+    // console.dir(collections._root, {
+    //     depth: 3
+
+    // });
 
     let specifics = html('#profile-ability > div.profile-ability-battle > ul > li > span');
     let specificList = [];
@@ -101,7 +119,10 @@ async function getInfo(name) {
         engraveList,
         cardList,
         expeditionLevel,
-        title
+        title,
+        pvp,
+        skill,
+        jewel: jewelDetail
     }
 
     return character;
