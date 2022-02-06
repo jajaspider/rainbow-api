@@ -55,13 +55,22 @@ async function getInfo(name) {
         let ranking = characterTd('td > p').text().replace(/\n/g, '').replace(/ +/g, " ").trim().split(" ");
         let imgSrc = characterTd('td > span.char_img > img').attr().src;
         let characterName = characterTd('td > dl > dt > a').text();
-        let characterClass = characterTd('td > dl > dd').text();
+        let characterClass = characterTd('td > dl > dd').text().split("/")[1].trim();
         let characterLevel = _.get(tds[2], 'children.0.data');
         let characterExp = _.get(tds[3], 'children.0.data');
         let characterPop = _.get(tds[4], 'children.0.data');
         let characterGuild = _.get(tds[5], 'children.0.data');
         let dojang = htmlMg('#app > div.card.border-bottom-0 > div > section > div.row.text-center > div:nth-child(1) > section > div > div > div').text().replace(/\n/g, '').replace(/ +/g, " ").trim().split(" ");
+        let dojangTime = null;
+        if (dojang[2] || dojang[3]) {
+            dojangTime = `${dojang[2]} ${dojang[3]}`;
+        }
+
         let seed = htmlMg('#app > div.card.border-bottom-0 > div > section > div.row.text-center > div:nth-child(2) > section > div > div > div').text().replace(/\n/g, '').replace(/ +/g, " ").trim().split(" ");
+        let seedTime = null;
+        if (seed[2] || seed[3]) {
+            seedTime = `${seed[2]} ${seed[3]}`;
+        }
 
         let character = {
             name: characterName,
@@ -76,12 +85,12 @@ async function getInfo(name) {
                 change: ranking[1]
             },
             dojang: {
-                stair: dojang[0],
-                time: `${dojang[2]} ${dojang[3]}`
+                stair: dojang[0] || '-',
+                time: dojangTime || '-',
             },
             seed: {
-                stair: seed[0],
-                time: `${seed[2]} ${seed[3]}`
+                stair: seed[0] || '-',
+                time: seedTime || '-'
             }
         };
 
