@@ -98,6 +98,67 @@ async function getInfo(name) {
     }
 }
 
+async function getStarForce(level, star) {
+    let itemTable = {};
+
+    // let i;
+    let arr = ['130', '140', '150', '160', '200'];
+    for (i = 0; i < arr.length; i += 1) {
+        itemTable[arr[i]] = {};
+    }
+
+    for (let i = 0; i < arr.length; i += 1) {
+        for (let j = 0; j < 25; j += 1) {
+            let stat = 0;
+            let attack = 0;
+            for (let k = 0; k <= j; k++) {
+                if (0 < k && k <= 5) {
+                    stat += 2;
+                } else if (5 < k && k <= 15) {
+                    stat += 3;
+                }
+            }
+
+            let attackStar = j - 15;
+            for (let k = 0; k < attackStar; k++) {
+                // item-> 160 > 3
+                // 0 attack 10
+                if (k < 6) {
+                    attack += (7 + i + k);
+                    stat += (7 + 2 * i);
+                }
+                if (k === 6) {
+                    attack += (7 + i + k + 1);
+                    stat += (7 + 2 * i);
+                }
+            }
+            let attackStar2 = j - 22;
+            if (22 <= j) {
+                for (let k = 0; k < attackStar2; k++) {
+                    attack += (16 + i + k * 2);
+                }
+            }
+
+            if (i == 4 && 0 < attackStar) {
+                attack += (attackStar);
+            }
+
+            itemTable[arr[i]][j] = { stat, attack };
+
+            // itemTable[arr[i]] = {
+            //     j: {
+            //         stat,
+            //         attack
+            //     }
+            // };
+        }
+
+    }
+
+    return _.get(itemTable, `${level}.${star}`, '잘못입력하셨습니다.');
+}
+
 module.exports = {
     getInfo,
+    getStarForce,
 };
