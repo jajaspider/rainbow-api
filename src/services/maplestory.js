@@ -143,7 +143,10 @@ async function getStarForce(level, star) {
                 attack += (attackStar);
             }
 
-            itemTable[arr[i]][j] = { stat, attack };
+            itemTable[arr[i]][j] = {
+                stat,
+                attack
+            };
 
             // itemTable[arr[i]] = {
             //     j: {
@@ -155,7 +158,9 @@ async function getStarForce(level, star) {
 
     }
 
-    return _.get(itemTable, `${level}.${star}`, '잘못입력하셨습니다.');
+    return _.get(itemTable, `${level}.${star}`) || {
+        errorInfo: '잘못입력하셨습니다.'
+    };
 }
 
 module.exports = {
