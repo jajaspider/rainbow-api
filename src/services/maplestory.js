@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const axios = require('axios');
 const cheerio = require('cheerio');
+const exp = require("../core/exp");
 
 async function getInfo(name) {
     let result = await axios.get(`https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURIComponent(name)}&w=0`);
@@ -58,6 +59,8 @@ async function getInfo(name) {
         let characterClass = characterTd('td > dl > dd').text().split("/")[1].trim();
         let characterLevel = _.get(tds[2], 'children.0.data');
         let characterExp = _.get(tds[3], 'children.0.data');
+        characterExp = characterExp.replace(/[^0-9]/g, "");
+        characterExp = exp.getPercent(characterLevel.replace(/[^0-9]/g, ""), characterExp);
         let characterPop = _.get(tds[4], 'children.0.data');
         let characterGuild = _.get(tds[5], 'children.0.data');
         let dojang = htmlMg('#app > div.card.border-bottom-0 > div > section > div.row.text-center > div:nth-child(1) > section > div > div > div').text().replace(/\n/g, '').replace(/ +/g, " ").trim().split(" ");
