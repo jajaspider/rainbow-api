@@ -177,6 +177,12 @@ function getGrowthPer(type, level) {
     let expValue = 0;
     switch (type) {
         case 'leap':
+            if (level >= 140 && level < 200) {
+                return "측정할 수 없습니다.";
+            }
+            if (level < 140) {
+                return "사용이 불가능합니다.";
+            }
             expValue = exp.character[199];
             break;
         case 'elixir1':
@@ -197,6 +203,9 @@ function getGrowthPer(type, level) {
         default:
             break;
 
+    }
+    if (level < 200) {
+        return "사용이 불가능합니다.";
     }
 
     const expPercent = exp.getPercent(parseInt(level), expValue);
