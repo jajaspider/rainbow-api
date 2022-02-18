@@ -166,7 +166,45 @@ async function getStarForce(level, star) {
     };
 }
 
+function getGrowthPer(type, level) {
+    // 익스트림 성장의 비약 - 199레벨 경험치
+    // 성장의 비약1 - 209레벨 경험치
+    // 성장의 비약2 - 219레벨 경험치
+    // 성장의 비약3 - 229레벨 경험치
+    // 태풍 성장의 비약 - 239레벨 경험치
+    // 극한 성장의 비약 - 249레벨 경험치
+
+    let expValue = 0;
+    switch (type) {
+        case 'leap':
+            expValue = exp.character[199];
+            break;
+        case 'elixir1':
+            expValue = exp.character[209];
+            break;
+        case 'elixir2':
+            expValue = exp.character[219];
+            break;
+        case 'elixir3':
+            expValue = exp.character[229];
+            break;
+        case 'typhoon':
+            expValue = exp.character[239];
+            break;
+        case 'extreme':
+            expValue = exp.character[249];
+            break;
+        default:
+            break;
+
+    }
+
+    const expPercent = exp.getPercent(parseInt(level), expValue);
+    return parseFloat(expPercent) >= 100 ? "1레벨 상승" : expPercent;
+}
+
 module.exports = {
     getInfo,
     getStarForce,
+    getGrowthPer,
 };

@@ -45,5 +45,27 @@ router.get('/starforce/:level/:star', async function (req, res, next) {
     return res.json(resPayload);
 });
 
+router.get('/growth/:level', async function (req, res, next) {
+    let resPayload = {
+        isSuccess: false,
+    };
+
+    if (!_.get(req.body, 'type')) {
+        resPayload.isSuccess = false;
+        resPayload.payload = {
+            message: "type을 확인하세요"
+        }
+        return res.json(resPayload);
+    }
+
+    let result = maplestoryService.getGrowthPer(req.body.type, req.params.level);
+
+    resPayload.isSuccess = true;
+    resPayload.payload = {
+        percent: result
+    }
+    return res.json(resPayload);
+});
+
 
 module.exports = router;
