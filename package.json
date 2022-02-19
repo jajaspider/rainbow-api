@@ -6,6 +6,8 @@
     "start": "node ./app.js"
   },
   "dependencies": {
+    "amqp-connection-manager": "^4.1.1",
+    "amqplib": "^0.8.0",
     "async": "^3.2.3",
     "axios": "^0.25.0",
     "cheerio": "^1.0.0-rc.10",
