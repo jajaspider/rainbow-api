@@ -17,6 +17,8 @@ let rainbowPort = _.get(rainbow, 'port');
 let indexRouter = require('./src/routes/index');
 // var usersRouter = require('./routes/users');
 
+require('./src/core/croll');
+
 var app = express();
 var port = normalizePort(rainbowPort || '30003');
 app.set('port', port);
