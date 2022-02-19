@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const axios = require('axios');
 const cheerio = require('cheerio');
+const exp = require("../core/exp");
 
 async function getInfo(name) {
     let result = await axios.get(`https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURIComponent(name)}&w=0`);
@@ -58,6 +59,8 @@ async function getInfo(name) {
         let characterClass = characterTd('td > dl > dd').text().split("/")[1].trim();
         let characterLevel = _.get(tds[2], 'children.0.data');
         let characterExp = _.get(tds[3], 'children.0.data');
+        characterExp = characterExp.replace(/[^0-9]/g, "");
+        characterExp = exp.getPercent(characterLevel.replace(/[^0-9]/g, ""), characterExp);
         let characterPop = _.get(tds[4], 'children.0.data');
         let characterGuild = _.get(tds[5], 'children.0.data');
         let dojang = htmlMg('#app > div.card.border-bottom-0 > div > section > div.row.text-center > div:nth-child(1) > section > div > div > div').text().replace(/\n/g, '').replace(/ +/g, " ").trim().split(" ");
@@ -163,7 +166,54 @@ async function getStarForce(level, star) {
     };
 }
 
+function getGrowthPer(type, level) {
+    // 익스트림 성장의 비약 - 199레벨 경험치
+    // 성장의 비약1 - 209레벨 경험치
+    // 성장의 비약2 - 219레벨 경험치
+    // 성장의 비약3 - 229레벨 경험치
+    // 태풍 성장의 비약 - 239레벨 경험치
+    // 극한 성장의 비약 - 249레벨 경험치
+
+    let expValue = 0;
+    switch (type) {
+        case 'leap':
+            if (level >= 140 && level < 200) {
+                return "측정할 수 없습니다.";
+            }
+            if (level < 140) {
+                return "사용이 불가능합니다.";
+            }
+            expValue = exp.character[199];
+            break;
+        case 'elixir1':
+            expValue = exp.character[209];
+            break;
+        case 'elixir2':
+            expValue = exp.character[219];
+            break;
+        case 'elixir3':
+            expValue = exp.character[229];
+            break;
+        case 'typhoon':
+            expValue = exp.character[239];
+            break;
+        case 'extreme':
+            expValue = exp.character[249];
+            break;
+        default:
+            break;
+
+    }
+    if (level < 200) {
+        return "사용이 불가능합니다.";
+    }
+
+    const expPercent = exp.getPercent(parseInt(level), expValue);
+    return parseFloat(expPercent) >= 100 ? "1레벨 상승" : expPercent;
+}
+
 module.exports = {
     getInfo,
     getStarForce,
+    getGrowthPer,
 };
