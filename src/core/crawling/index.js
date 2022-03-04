@@ -1,7 +1,7 @@
 const maplestory = require('./maplestory');
 const lostark = require("./lostark");
 
-class Croll {
+class Crawling {
     constructor() {
 
     }
@@ -10,19 +10,19 @@ class Croll {
         await lostark.init();
 
         this.maplestoryNotice = setInterval(async () => {
-            await maplestory.crollNotice();
+            await maplestory.crawlingNotice();
         }, 5000);
         this.maplestoryTestNotice = setInterval(async () => {
-            await maplestory.crollTestNotice();
+            await maplestory.crawlingTestNotice();
         }, 5000);
 
         this.lostarkNotice = setInterval(async () => {
-            await lostark.crollNotice();
+            await lostark.crawlingNotice();
         }, 5000);
     }
 }
 
-const croll = new Croll();
-croll.init();
+const crawling = new Crawling();
+crawling.init();
 
-module.exports = croll;
+module.exports = crawling;

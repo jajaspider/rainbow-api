@@ -33,7 +33,7 @@ class Maplestory {
 
     }
 
-    async crollNotice() {
+    async crawlingNotice() {
         let urlPrefix = "https://maplestory.nexon.com";
         let url = `${urlPrefix}/News/Notice`;
         let response = await axios.get(url);
@@ -64,7 +64,7 @@ class Maplestory {
         }
     }
 
-    async crollTestNotice() {
+    async crawlingTestNotice() {
         let urlPrefix = "https://maplestory.nexon.com";
         let url = `${urlPrefix}/Testworld/Totalnotice`;
         let response = await axios.get(url);

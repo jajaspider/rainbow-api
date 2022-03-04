@@ -22,7 +22,7 @@ class Lostark {
         });
     }
 
-    async crollNotice() {
+    async ccrawlingNotice() {
         let urlPrefix = "https://lostark.game.onstove.com";
         let url = `${urlPrefix}/News/Notice/List`;
         let response = await axios.get(url);
