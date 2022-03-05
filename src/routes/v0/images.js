@@ -72,7 +72,13 @@ router.post('/upload', upload.single('file'), async function (req, res, next) {
         });
         resPayload.isSuccess = true;
         resPayload.payload = {
-            message: '등록되었습니다.'
+            image: {
+                name,
+                type,
+                imageUrl,
+                imageH,
+                imageW
+            }
         }
         return res.json(resPayload);
     } catch (e) {
