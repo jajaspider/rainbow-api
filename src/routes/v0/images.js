@@ -87,7 +87,6 @@ router.get('/:type/:name', async function (req, res, next) {
     let resPayload = {
         isSuccess: false,
     };
-    req.params.type
 
     let imageResult = await imageDB.find({
         type: req.params.type,
@@ -111,5 +110,19 @@ router.get('/:type/:name', async function (req, res, next) {
     }
 });
 
+router.get('/', async function (req, res, next) {
+    let resPayload = {
+        isSuccess: false,
+    };
+
+    let imageResult = await imageDB.find().lean();
+
+    resPayload.isSuccess = true;
+    resPayload.payload = {
+        images: imageResult
+    }
+    // await rm(path.join(__dirname, 'uploads', filename));
+    return res.json(resPayload);
+});
 
 module.exports = router;
