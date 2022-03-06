@@ -14,7 +14,7 @@ class Lostark {
         let notices = await NoticeDB.find({
             'type': 'lostarkNotice'
         }).sort({
-            'created_at': -1
+            'createdAt': -1
         }).limit(15).lean();
 
         _.map(notices, (notice) => {

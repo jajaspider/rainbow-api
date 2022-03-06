@@ -29,6 +29,7 @@ server.on('listening', onListening);
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(express.static('public'));
 
 let mongo = _.get(config, 'mongo');
 let mongoIp = _.get(mongo, 'ip');

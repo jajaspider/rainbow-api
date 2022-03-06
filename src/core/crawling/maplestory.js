@@ -15,12 +15,12 @@ class Maplestory {
         let notices = await NoticeDB.find({
             'type': 'maplestoryNotice'
         }).sort({
-            'created_at': -1
+            'createdAt': -1
         }).limit(10).lean();
         let testNotices = await NoticeDB.find({
             'type': 'maplestoryTestNotice'
         }).sort({
-            'created_at': -1
+            'createdAt': -1
         }).limit(10).lean();
 
         _.map(notices, (notice) => {
