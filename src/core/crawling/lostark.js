@@ -33,7 +33,7 @@ class Lostark {
         for (let notice of notices) {
             notice = cheerio.load(notice);
             let noticeUrl = _.get(notice('a'), '0.attribs.href').split("?")[0];
-            let noticeTitle = notice('a > div.list__subject > span').text().replace(/\n/g, '').replace(/ +/g, " ").trim();
+            let noticeTitle = notice('a > div.list__subject > span').text().replace(/\n/g, '').replace('새 글', '').replace(/ +/g, " ").trim();
             let noticeObj = {
                 url: `${urlPrefix}${noticeUrl}`,
                 title: noticeTitle,
