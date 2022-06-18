@@ -1,7 +1,10 @@
 const _ = require("lodash");
 const axios = require('axios');
 const cheerio = require('cheerio');
+
 const exp = require("../core/exp");
+const MapleClass = require('../models').MapleClass;
+const util = require('../utils');
 
 async function getInfo(name) {
     let result = await axios.get(`https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURIComponent(name)}&w=0`);
@@ -212,8 +215,63 @@ function getGrowthPer(type, level) {
     return parseFloat(expPercent) >= 100 ? "1레벨 상승" : expPercent;
 }
 
+async function getClass(type) {
+    if (!type) {
+        let classes = await MapleClass.find();
+        classes = util.toJSON(classes);
+        let randomOne = _.sample(classes);
+
+        return _.get(randomOne, 'className');
+    }
+
+    let allowStat = ['str', 'dex', 'int', 'luk', 'hp', '힘', '덱스', '인트', '럭'];
+    let allowGroup = ['모험가', '시그너스', '레지스탕스', '영웅', '노바', '레프', '아니마', '제로', '키네시스'];
+    let aloowType = ['전사', '마법사', '궁수', '도적', '해적'];
+    let query = {};
+    if (_.includes(allowStat, type)) {
+        if (type == '힘') {
+            type = 'str'
+        }
+        else if (type == '덱스') {
+            type = 'dex'
+        }
+        else if (type == '인트') {
+            type = 'int'
+        }
+        else if (type == '럭') {
+            type = 'luk'
+        }
+        else if (type == '체력') {
+            type = 'hp'
+        }
+
+        query = { classStat: type };
+    }
+    else if (_.includes(allowGroup, type)) {
+
+        query = { classGroup: type };
+    }
+    else if (_.includes(aloowType, type)) {
+        query = { classType: type };
+    }
+
+    let classes = await MapleClass.find(query);
+    classes = util.toJSON(classes);
+    let randomOne = _.sample(classes);
+
+    return _.get(randomOne, 'className');
+}
+
+
+// function getSymbol(start, end) {
+
+//     symbol.getCal(start, end);
+// }
+
 module.exports = {
     getInfo,
     getStarForce,
     getGrowthPer,
+    // getSymbol,
+    getClass
 };
