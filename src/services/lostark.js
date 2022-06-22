@@ -186,8 +186,56 @@ async function getExpandCharacter(name) {
     return expandCharacter;
 }
 
+async function getEventList() {
+    const entPoint = "https://lostark.game.onstove.com/";
+    const url = `${entPoint}/News/Event/Now`;
+    let response = await axios.get(url);
+    let responseData = _.get(response, 'data');
+
+    let eventPage = cheerio.load(responseData);
+    let eventList = eventPage(`#lostark-wrapper > div > main > div > div > div.list.list--event > ul > li`);
+
+    let events = [];
+    for (let _event of eventList) {
+        let eventHtml = cheerio.load(_event);
+
+        let hrefHtml = eventHtml(`a`);
+        let href = _.get(hrefHtml, '0.attribs.href');
+
+        let imgSrc = eventHtml(`a > div.list__thumb > img`);
+        imgSrc = _.get(imgSrc, '0.attribs.src');
+
+        let titleHtml = eventHtml(`a > div.list__subject > span`);
+        let title = _.get(titleHtml, '0.children.0.data');
+
+        let term = eventHtml(`a > div.list__term`).text();
+
+        let receive = eventHtml(`a > div.list__receive`).text();
+
+        // let imgSrc = eventHtml(`div > dl > dt > a > img`);
+        // imgSrc = _.get(imgSrc, '0.attribs.src');
+
+        // let targetNode = eventHtml(`div > dl > dd.data > p > a`);
+
+        // let href = _.get(targetNode, '0.attribs.href');
+        // let title = _.get(targetNode, '0.children.0.data');
+
+        // let dateNode = eventHtml(`div > dl > dd.date > p`).text();
+
+        events.push({
+            title: title,
+            img_path: imgSrc,
+            link: `${entPoint}${href}`,
+            term: term,
+            receive: receive
+        })
+    }
+    return events;
+}
+
 module.exports = {
     getInfo,
     getCrystal,
-    getExpandCharacter
+    getExpandCharacter,
+    getEventList
 };

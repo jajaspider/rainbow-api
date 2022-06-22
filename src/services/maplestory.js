@@ -288,7 +288,6 @@ async function getUnionInfo(name) {
     unionPower = parseInt(unionPower);
 
     unionCoinPerDay = unionPower * 8.64 / 10000000;
-
     unionCoinPerDay = Math.round(unionCoinPerDay);
 
     return {
@@ -298,6 +297,39 @@ async function getUnionInfo(name) {
         unionPower,
         unionCoinPerDay
     };
+}
+
+async function getEventList() {
+    const entPoint = "https://maplestory.nexon.com";
+    const url = `${entPoint}/News/Event/Ongoing`;
+    let response = await axios.get(url);
+    let responseData = _.get(response, 'data');
+
+    let eventPage = cheerio.load(responseData);
+    let eventList = eventPage(`#container > div > div.contents_wrap > div.event_board > ul > li`);
+
+    let events = [];
+    for (let _event of eventList) {
+        let eventHtml = cheerio.load(_event);
+
+        let imgSrc = eventHtml(`div > dl > dt > a > img`);
+        imgSrc = _.get(imgSrc, '0.attribs.src');
+
+        let targetNode = eventHtml(`div > dl > dd.data > p > a`);
+
+        let href = _.get(targetNode, '0.attribs.href');
+        let title = _.get(targetNode, '0.children.0.data');
+
+        let dateNode = eventHtml(`div > dl > dd.date > p`).text();
+
+        events.push({
+            title: title,
+            img_path: imgSrc,
+            link: `${entPoint}${href}`,
+            date: dateNode
+        })
+    }
+    return events;
 }
 
 // function getSymbol(start, end) {
@@ -311,5 +343,6 @@ module.exports = {
     getGrowthPer,
     // getSymbol,
     getClass,
-    getUnionInfo
+    getUnionInfo,
+    getEventList
 };
