@@ -67,5 +67,26 @@ router.get('/growth/:level', async function (req, res, next) {
     return res.json(resPayload);
 });
 
+router.get('/union/:name', async function (req, res, next) {
+    let resPayload = {
+        isSuccess: false,
+    };
+
+    let result = await maplestoryService.getUnionInfo(req.params.name);
+    if (_.get(result, 'errorInfo')) {
+        resPayload.isSuccess = false;
+        resPayload.payload = {
+            message: _.get(result, 'errorInfo')
+        }
+        return res.json(resPayload);
+    }
+
+    resPayload.isSuccess = true;
+    resPayload.payload = {
+        character: result
+    }
+    return res.json(resPayload);
+});
+
 
 module.exports = router;
