@@ -16,12 +16,12 @@ class Maplestory {
             'type': 'maplestoryNotice'
         }).sort({
             'createdAt': -1
-        }).limit(10).lean();
+        }).limit(15).lean();
         let testNotices = await NoticeDB.find({
             'type': 'maplestoryTestNotice'
         }).sort({
             'createdAt': -1
-        }).limit(10).lean();
+        }).limit(15).lean();
 
         _.map(notices, (notice) => {
             this.notices.push(_.pick(notice, ['title', 'url', 'type']));
@@ -30,7 +30,6 @@ class Maplestory {
         _.map(testNotices, (testNotice) => {
             this.testNotices.push(_.pick(testNotice, ['title', 'url', 'type']));
         });
-
     }
 
     async crawlingNotice() {
