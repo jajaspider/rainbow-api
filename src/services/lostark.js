@@ -225,7 +225,7 @@ async function getEventList() {
         events.push({
             title: title,
             img_path: imgSrc,
-            link: `${entPoint}${href}`,
+            link: `${href}`,
             term: term,
             receive: receive
         })
