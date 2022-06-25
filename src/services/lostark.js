@@ -59,19 +59,76 @@ async function getInfo(name) {
     }
 
     let jewelDetail = [];
-    let jewels = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li > p');
-    for (let jewel of jewels) {
-        jewelDetail.push(`${_.get(jewel, 'children.0.children.0.data')}${_.get(jewel, 'children.1.data')}`);
+    let jewelHtml = html(`#profile-jewel > div > div.jewel__wrap > span`);
+
+
+    let jewels = [];
+    for (let _jewel of jewelHtml) {
+        let jewelHtml = cheerio.load(_jewel);
+
+        let jewelevel = jewelHtml(`span.jewel_level`);
+        let jewelImg = jewelHtml(`span.jewel_img`);
+        jewelImg = _.get(jewelImg, '0.children.0.attribs.src');
+        let annihilations = ['46', '47', '48', '49', '50', '51', '52', '53', '54', '55'];
+        for (let i = 0; i < annihilations.length; i += 1) {
+            if (_.includes(jewelImg, annihilations[i])) {
+                jewels.push({
+                    level: _.get(jewelevel, '0.children.0.data'),
+                    type: 'annihilation'
+                })
+            }
+        }
+
+        let cooldowns = ['56', '57', '58', '59', '60', '61', '62', '63', '64', '65'];
+        for (let i = 0; i < cooldowns.length; i += 1) {
+            if (_.includes(jewelImg, cooldowns[i])) {
+                jewels.push({
+                    level: _.get(jewelevel, '0.children.0.data'),
+                    type: 'cooldown'
+                })
+            }
+        }
+    }
+    jewels = _.reverse(_.sortBy(jewels, ['level', 'type']));
+    // 2022.06.25 
+    // 상세 보석 정보가 필요한 경우 jewel-effect__list에서 다시 정보를 획득해야합니다.
+
+    // let jewels = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li > p');
+    // for (let jewel of jewels) {
+    // jewelDetail.push(`${_.get(jewel, 'children.0.children.0.data')}${_.get(jewel, 'children.1.data')}`);
+    // }
+
+
+    // If use the getCollection post method, obtain information from the document.
+    let lines = _.split(result.data, '\n');
+    let characterUnique = {};
+    for (let line of lines) {
+        if (_.includes(line, '_memberNo')) {
+            line = line.replace('\t\tvar _memberNo = \'', '').replace('\';\r', '');
+            characterUnique.memberNo = line;
+        }
+        if (_.includes(line, '_worldNo')) {
+            line = line.replace('\t\tvar _worldNo = \'', '').replace('\';\r', '');
+            characterUnique.worldNo = line;
+        }
+        if (_.includes(line, '_pcId')) {
+            line = line.replace('\t\tvar _pcId = \'', '').replace('\';\r', '');
+            characterUnique.pcId = line;
+        }
     }
 
-    // 수집물의 정보를 획득하는 메소르를 post로 날려서 확인해야함
-    // 2022.02.05 수정예정
+    let collectionList = [];
 
-    // let collections = html('#lui-tab1-1 > div > div.collection-list > div > p');
-    // console.dir(collections._root, {
-    //     depth: 3
+    let collectionRes = await axios.post("https://lostark.game.onstove.com/Profile/GetCollection", characterUnique);
+    let collectionHtml = cheerio.load(collectionRes.data);
+    let collections = collectionHtml(`div > div.lui-tab__menu > a`);
 
-    // });
+    for (let _collection of collections) {
+        collectionList.push({
+            name: _.get(_collection, 'children.0.data').trim(),
+            count: _.get(_collection, 'children.1.children.0.data')
+        })
+    }
 
     let specifics = html('#profile-ability > div.profile-ability-battle > ul > li > span');
     let specificList = [];
@@ -105,7 +162,6 @@ async function getInfo(name) {
         });
     }
 
-
     let character = {
         server,
         nickname,
@@ -122,7 +178,8 @@ async function getInfo(name) {
         title,
         pvp,
         skill,
-        jewel: jewelDetail
+        jewel: jewels,
+        collection: collectionList
     }
 
     return character;
