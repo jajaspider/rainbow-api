@@ -8,6 +8,7 @@ const {
     mkdir,
     rm
 } = require("../../core/utils");
+const utils = require('../../utils');
 const path = require('path');
 const image_size = require('image-size');
 
@@ -128,6 +129,46 @@ router.get('/', async function (req, res, next) {
         images: imageResult
     }
     // await rm(path.join(__dirname, 'uploads', filename));
+    return res.json(resPayload);
+});
+
+router.delete('/:type/:name', async function (req, res, next) {
+    let resPayload = {
+        isSuccess: false,
+    };
+
+    let imageResult = await imageDB.find({
+        type: req.params.type,
+        name: req.params.name
+    });
+    imageResult = utils.toJSON(imageResult);
+    if (_.isEmpty(imageResult)) {
+        resPayload.isSuccess = false;
+        resPayload.payload = {
+            message: '일치하는 이미지가 없습니다.'
+        }
+        return res.json(resPayload);
+    }
+
+    let result = await imageDB.deleteOne({
+        type: req.params.type,
+        name: req.params.name
+    });
+    if (result.deletedCount > 0) {
+        let imagePath = path.join(process.cwd(), 'public', imageResult[0].imageUrl);
+        await rm(imagePath);
+    } else {
+        resPayload.isSuccess = false;
+        resPayload.payload = {
+            message: '삭제 실패'
+        }
+        return res.json(resPayload);
+    }
+
+    resPayload.isSuccess = true;
+    resPayload.payload = {
+        result: '삭제되었습니다.'
+    }
     return res.json(resPayload);
 });
 
