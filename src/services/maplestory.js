@@ -3,6 +3,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const exp = require("../core/exp");
+const symbol = require("../core/symbol");
 const MapleClass = require('../models').MapleClass;
 const util = require('../utils');
 
@@ -336,13 +337,31 @@ async function getEventList() {
 
 //     symbol.getCal(start, end);
 // }
+function getSymbol(start, end) {
+    start = parseInt(start);
+    end = parseInt(end);
+    if (start < 1 || 19 < start) {
+        // error processing
+        return {
+            errorInfo: '시작값이 잘못되었습니다.'
+        };
+    }
+    if (end <= start || 20 < end) {
+        // error processing
+        return {
+            errorInfo: '종료값이 잘못되었습니다.'
+        };
+    }
+    let result = symbol.getFigure(start, end);
+    return result;
+}
 
 module.exports = {
     getInfo,
     getStarForce,
     getGrowthPer,
-    // getSymbol,
     getClass,
     getUnionInfo,
-    getEventList
+    getEventList,
+    getSymbol
 };
