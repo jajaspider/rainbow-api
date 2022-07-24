@@ -15,7 +15,7 @@ class Lostark {
             'type': 'lostarkNotice'
         }).sort({
             'createdAt': -1
-        }).limit(15).lean();
+        }).limit(30).lean();
 
         _.map(notices, (notice) => {
             this.notices.push(_.pick(notice, ['title', 'url', 'type']));
