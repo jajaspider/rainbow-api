@@ -58,20 +58,91 @@ async function getInfo(name) {
         }
     }
 
-    let jewelDetail = [];
-    let jewels = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li > p');
-    for (let jewel of jewels) {
-        jewelDetail.push(`${_.get(jewel, 'children.0.children.0.data')}${_.get(jewel, 'children.1.data')}`);
+    let jewels = [];
+    let jewelHtml = html(`#profile-jewel > div > div.jewel__wrap > span`);
+    for (let _jewel of jewelHtml) {
+        // 쥬얼이 배열이 안되어있기때문에 gemId로 정보 매칭
+        let gemId = _.get(_jewel, 'attribs.id');
+
+        // img는 보석의 멸화/홍염을 구분하기위함
+        // level은 text로 기억
+        let jewelHtml = cheerio.load(_jewel);
+        let jewelevel = jewelHtml(`span.jewel_level`);
+        let jewelImg = jewelHtml(`span.jewel_img`);
+
+        jewelImg = _.get(jewelImg, '0.children.0.attribs.src');
+        let annihilations = ['46', '47', '48', '49', '50', '51', '52', '53', '54', '55'];
+        for (let i = 0; i < annihilations.length; i += 1) {
+            if (_.includes(jewelImg, annihilations[i])) {
+                jewels.push({
+                    level: _.get(jewelevel, '0.children.0.data'),
+                    type: 'annihilation',
+                    gemId
+                })
+            }
+        }
+
+        let cooldowns = ['56', '57', '58', '59', '60', '61', '62', '63', '64', '65'];
+        for (let i = 0; i < cooldowns.length; i += 1) {
+            if (_.includes(jewelImg, cooldowns[i])) {
+                jewels.push({
+                    level: _.get(jewelevel, '0.children.0.data'),
+                    type: 'cooldown',
+                    gemId
+                })
+            }
+        }
     }
 
-    // 수집물의 정보를 획득하는 메소르를 post로 날려서 확인해야함
-    // 2022.02.05 수정예정
+    //jewels를 높은 레벨과 레벨 별 멸화/홍염으로 정리
+    jewels = _.reverse(_.sortBy(jewels, ['level', 'type']));
 
-    // let collections = html('#lui-tab1-1 > div > div.collection-list > div > p');
-    // console.dir(collections._root, {
-    //     depth: 3
+    //보석의 스킬 상세 정보를 획득 하기위함
+    let jewelDetails = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li');
+    for (let _jewelDetail of jewelDetails) {
+        //해당 slot의 보석 데이터를 획득
+        let jewelDetailHtml = cheerio.load(_jewelDetail);
+        let jewelSlot = jewelDetailHtml(`span.slot`);
+        //gemId로 데이터 매칭
+        let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
 
-    // });
+        //실제 스킬 정보를 획득
+        let jewelInfo = jewelDetailHtml('p.skill_detail');
+
+        let jewelObj = _.find(jewels, { gemId });
+        jewelObj.info = jewelInfo.text();
+    }
+
+    // If use the getCollection post method, obtain information from the document.
+    let lines = _.split(result.data, '\n');
+    let characterUnique = {};
+    for (let line of lines) {
+        if (_.includes(line, '_memberNo')) {
+            line = line.replace('\t\tvar _memberNo = \'', '').replace('\';\r', '');
+            characterUnique.memberNo = line;
+        }
+        if (_.includes(line, '_worldNo')) {
+            line = line.replace('\t\tvar _worldNo = \'', '').replace('\';\r', '');
+            characterUnique.worldNo = line;
+        }
+        if (_.includes(line, '_pcId')) {
+            line = line.replace('\t\tvar _pcId = \'', '').replace('\';\r', '');
+            characterUnique.pcId = line;
+        }
+    }
+
+    let collectionList = [];
+
+    let collectionRes = await axios.post("https://lostark.game.onstove.com/Profile/GetCollection", characterUnique);
+    let collectionHtml = cheerio.load(collectionRes.data);
+    let collections = collectionHtml(`div > div.lui-tab__menu > a`);
+
+    for (let _collection of collections) {
+        collectionList.push({
+            name: _.get(_collection, 'children.0.data').trim(),
+            count: _.get(_collection, 'children.1.children.0.data')
+        })
+    }
 
     let specifics = html('#profile-ability > div.profile-ability-battle > ul > li > span');
     let specificList = [];
@@ -105,7 +176,6 @@ async function getInfo(name) {
         });
     }
 
-
     let character = {
         server,
         nickname,
@@ -122,7 +192,8 @@ async function getInfo(name) {
         title,
         pvp,
         skill,
-        jewel: jewelDetail
+        jewel: jewels,
+        collection: collectionList
     }
 
     return character;
