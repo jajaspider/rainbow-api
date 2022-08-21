@@ -58,23 +58,26 @@ async function getInfo(name) {
         }
     }
 
-    let jewelDetail = [];
-    let jewelHtml = html(`#profile-jewel > div > div.jewel__wrap > span`);
-
-
     let jewels = [];
+    let jewelHtml = html(`#profile-jewel > div > div.jewel__wrap > span`);
     for (let _jewel of jewelHtml) {
-        let jewelHtml = cheerio.load(_jewel);
+        // 쥬얼이 배열이 안되어있기때문에 gemId로 정보 매칭
+        let gemId = _.get(_jewel, 'attribs.id');
 
+        // img는 보석의 멸화/홍염을 구분하기위함
+        // level은 text로 기억
+        let jewelHtml = cheerio.load(_jewel);
         let jewelevel = jewelHtml(`span.jewel_level`);
         let jewelImg = jewelHtml(`span.jewel_img`);
+
         jewelImg = _.get(jewelImg, '0.children.0.attribs.src');
         let annihilations = ['46', '47', '48', '49', '50', '51', '52', '53', '54', '55'];
         for (let i = 0; i < annihilations.length; i += 1) {
             if (_.includes(jewelImg, annihilations[i])) {
                 jewels.push({
                     level: _.get(jewelevel, '0.children.0.data'),
-                    type: 'annihilation'
+                    type: 'annihilation',
+                    gemId
                 })
             }
         }
@@ -84,20 +87,31 @@ async function getInfo(name) {
             if (_.includes(jewelImg, cooldowns[i])) {
                 jewels.push({
                     level: _.get(jewelevel, '0.children.0.data'),
-                    type: 'cooldown'
+                    type: 'cooldown',
+                    gemId
                 })
             }
         }
     }
+
+    //jewels를 높은 레벨과 레벨 별 멸화/홍염으로 정리
     jewels = _.reverse(_.sortBy(jewels, ['level', 'type']));
-    // 2022.06.25 
-    // 상세 보석 정보가 필요한 경우 jewel-effect__list에서 다시 정보를 획득해야합니다.
 
-    // let jewels = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li > p');
-    // for (let jewel of jewels) {
-    // jewelDetail.push(`${_.get(jewel, 'children.0.children.0.data')}${_.get(jewel, 'children.1.data')}`);
-    // }
+    //보석의 스킬 상세 정보를 획득 하기위함
+    let jewelDetails = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li');
+    for (let _jewelDetail of jewelDetails) {
+        //해당 slot의 보석 데이터를 획득
+        let jewelDetailHtml = cheerio.load(_jewelDetail);
+        let jewelSlot = jewelDetailHtml(`span.slot`);
+        //gemId로 데이터 매칭
+        let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
 
+        //실제 스킬 정보를 획득
+        let jewelInfo = jewelDetailHtml('p.skill_detail');
+
+        let jewelObj = _.find(jewels, { gemId });
+        jewelObj.info = jewelInfo.text();
+    }
 
     // If use the getCollection post method, obtain information from the document.
     let lines = _.split(result.data, '\n');
