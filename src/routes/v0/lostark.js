@@ -30,7 +30,7 @@ router.get('/info/:name', async function (req, res, next) {
     return res.json(resPayload);
 });
 
-router.get('/crystal/', async function (req, res, next) {
+router.get('/crystal', async function (req, res, next) {
     let resPayload = {
         isSuccess: false,
     };
