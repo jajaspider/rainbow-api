@@ -103,6 +103,7 @@ async function getInfo(name) {
         //해당 slot의 보석 데이터를 획득
         let jewelDetailHtml = cheerio.load(_jewelDetail);
         let jewelSlot = jewelDetailHtml(`span.slot`);
+        let skillName = jewelDetailHtml(`strong.skill_tit`);
         //gemId로 데이터 매칭
         let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
 
@@ -111,6 +112,7 @@ async function getInfo(name) {
 
         let jewelObj = _.find(jewels, { gemId });
         jewelObj.info = jewelInfo.text();
+        jewelObj.name = skillName.text();
     }
 
     // If use the getCollection post method, obtain information from the document.
