@@ -25,6 +25,8 @@ async function getInfo(name) {
     let nickname = html('#lostark-wrapper > div > main > div > div.profile-character-info > span.profile-character-info__name').text();
     let job = html('#lostark-wrapper > div > main > div > div.profile-character-info > img');
     job = _.get(job, '0.attribs.alt');
+    let characterImage = html(`#profile-equipment > div.profile-equipment__character > img`);
+    characterImage = _.get(characterImage, '0.attribs.src');
     let expeditionLevel = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.level-info > div.level-info__expedition > span:nth-child(2)').text();
     let fightLevel = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.level-info > div.level-info__item > span:nth-child(2)').text();
     let itemLevel = html('#lostark-wrapper > div > main > div > div.profile-ingame > div.profile-info > div.level-info2 > div.level-info2__expedition > span:nth-child(2)').text();
@@ -59,60 +61,68 @@ async function getInfo(name) {
     }
 
     let jewels = [];
-    let jewelHtml = html(`#profile-jewel > div > div.jewel__wrap > span`);
-    for (let _jewel of jewelHtml) {
-        // 쥬얼이 배열이 안되어있기때문에 gemId로 정보 매칭
-        let gemId = _.get(_jewel, 'attribs.id');
+    let noJewel = html(`#profile-jewel > div > div.jewel-effect__list > div > span.no_jewel`);
+    noJewel = _.get(noJewel, '0.attribs.class');
+    // 보석이 있을때만
+    if (!noJewel) {
+        let jewelHtml = html(`#profile-jewel > div > div.jewel__wrap > span`);
+        for (let _jewel of jewelHtml) {
+            // 쥬얼이 배열이 안되어있기때문에 gemId로 정보 매칭
+            let gemId = _.get(_jewel, 'attribs.id');
 
-        // img는 보석의 멸화/홍염을 구분하기위함
-        // level은 text로 기억
-        let jewelHtml = cheerio.load(_jewel);
-        let jewelevel = jewelHtml(`span.jewel_level`);
-        let jewelImg = jewelHtml(`span.jewel_img`);
+            // img는 보석의 멸화/홍염을 구분하기위함
+            // level은 text로 기억
+            let jewelHtml = cheerio.load(_jewel);
+            let jewelevel = jewelHtml(`span.jewel_level`);
+            let jewelImg = jewelHtml(`span.jewel_img`);
 
-        jewelImg = _.get(jewelImg, '0.children.0.attribs.src');
-        let annihilations = ['46', '47', '48', '49', '50', '51', '52', '53', '54', '55'];
-        for (let i = 0; i < annihilations.length; i += 1) {
-            if (_.includes(jewelImg, annihilations[i])) {
-                jewels.push({
-                    level: _.get(jewelevel, '0.children.0.data'),
-                    type: 'annihilation',
-                    gemId
-                })
+            jewelImg = _.get(jewelImg, '0.children.0.attribs.src');
+            // 11_10은 이벤트 보석임
+            let annihilations = ['46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '11_10'];
+            for (let i = 0; i < annihilations.length; i += 1) {
+                if (_.includes(jewelImg, annihilations[i])) {
+                    jewels.push({
+                        level: _.get(jewelevel, '0.children.0.data'),
+                        type: 'annihilation',
+                        gemId
+                    })
+                }
+            }
+
+            // 11_11은 이벤트 보석임
+            let cooldowns = ['56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '11_11'];
+            for (let i = 0; i < cooldowns.length; i += 1) {
+                if (_.includes(jewelImg, cooldowns[i])) {
+                    jewels.push({
+                        level: _.get(jewelevel, '0.children.0.data'),
+                        type: 'cooldown',
+                        gemId
+                    })
+                }
             }
         }
 
-        let cooldowns = ['56', '57', '58', '59', '60', '61', '62', '63', '64', '65'];
-        for (let i = 0; i < cooldowns.length; i += 1) {
-            if (_.includes(jewelImg, cooldowns[i])) {
-                jewels.push({
-                    level: _.get(jewelevel, '0.children.0.data'),
-                    type: 'cooldown',
-                    gemId
-                })
-            }
+        //jewels를 높은 레벨과 레벨 별 멸화/홍염으로 정리
+        jewels = _.reverse(_.sortBy(jewels, ['level', 'type']));
+
+        //보석의 스킬 상세 정보를 획득 하기위함
+        let jewelDetails = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li');
+        // console.dir(jewelDetails);
+        for (let _jewelDetail of jewelDetails) {
+            //해당 slot의 보석 데이터를 획득
+            let jewelDetailHtml = cheerio.load(_jewelDetail);
+            let jewelSlot = jewelDetailHtml(`span.slot`);
+            let skillName = jewelDetailHtml(`strong.skill_tit`);
+            //gemId로 데이터 매칭
+            let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
+
+            //실제 스킬 정보를 획득
+            let jewelInfo = jewelDetailHtml('p.skill_detail');
+
+            let jewelObj = _.find(jewels, { gemId });
+            jewelObj.info = jewelInfo.text();
+            jewelObj.name = skillName.text();
         }
-    }
-
-    //jewels를 높은 레벨과 레벨 별 멸화/홍염으로 정리
-    jewels = _.reverse(_.sortBy(jewels, ['level', 'type']));
-
-    //보석의 스킬 상세 정보를 획득 하기위함
-    let jewelDetails = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li');
-    for (let _jewelDetail of jewelDetails) {
-        //해당 slot의 보석 데이터를 획득
-        let jewelDetailHtml = cheerio.load(_jewelDetail);
-        let jewelSlot = jewelDetailHtml(`span.slot`);
-        let skillName = jewelDetailHtml(`strong.skill_tit`);
-        //gemId로 데이터 매칭
-        let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
-
-        //실제 스킬 정보를 획득
-        let jewelInfo = jewelDetailHtml('p.skill_detail');
-
-        let jewelObj = _.find(jewels, { gemId });
-        jewelObj.info = jewelInfo.text();
-        jewelObj.name = skillName.text();
     }
 
     // If use the getCollection post method, obtain information from the document.
@@ -184,6 +194,7 @@ async function getInfo(name) {
         job,
         fightLevel,
         itemLevel,
+        characterImage,
         attack,
         health,
         specificList,
@@ -247,8 +258,21 @@ async function getExpandCharacter(name) {
         let characters = html(`#expand-character-list > ul:nth-child(${3 + i * 2}) > li > span > button > span`);
 
         for (let character of characters) {
-            characterList.push(_.get(character, 'children.0.data'));
+            let _characterInfo = await axios.get(`http://127.0.0.1:30003/v0/lostark/info/${encodeURIComponent(_.get(character, 'children.0.data'))}`);
+
+            let characterData = _.get(_characterInfo, 'data');
+            let itemLevelStr = _.get(characterData, 'payload.character.itemLevel');
+            itemLevelStr = itemLevelStr.replace("Lv.", "");
+            let numberRegex = /[^0-9.]/g;
+            let itemLevel = Number.parseFloat(itemLevelStr.replace(numberRegex, ""));
+
+            characterList.push({
+                name: _.get(character, 'children.0.data'),
+                itemLevel,
+                itemLevelStr
+            })
         }
+        characterList = _.sortBy(characterList, 'itemLevel').reverse();
 
         expandCharacter.push({
             server,
