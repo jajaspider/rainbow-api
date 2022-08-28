@@ -86,4 +86,25 @@ router.get('/event', async function (req, res, next) {
     return res.json(resPayload);
 });
 
+router.get('/distribute/:gold', async function (req, res, next) {
+    let resPayload = {
+        isSuccess: false,
+    };
+
+    let result = await lostarkService.getDistributeAmount(req.params.gold);
+    if (_.get(result, 'errorInfo')) {
+        resPayload.isSuccess = false;
+        resPayload.payload = {
+            message: _.get(result, 'errorInfo')
+        }
+        return res.json(resPayload);
+    }
+
+    resPayload.isSuccess = true;
+    resPayload.payload = {
+        result
+    }
+    return res.json(resPayload);
+});
+
 module.exports = router;

@@ -361,9 +361,55 @@ async function getEventList() {
     return events;
 }
 
+function getDistributeAmount(gold, person = 0) {
+    let result = {};
+    /*
+    4인기준 판매금액입력(300)
+    실 수령금 = 판매금액 *0.95(285)
+    1인당 분배금액 = 실 수령금/400(71.25)
+    적정입찰가 = 실수령금-1인당 분배금액 인가(213)
+    최적입찰가 = 적정 입찰가 /1.1 (193.6363)
+    */
+    gold = Number.parseInt(gold);
+    let excludeFeeGold = Math.floor(gold * 0.95);
+
+    function calculator(people) {
+        // 분배금
+        let individualGold = Math.floor(excludeFeeGold / people);
+        // 분배금을 위한 경매 입찰가
+        let bidPrice = individualGold * (people - 1);
+
+        // 분배금을 유지하면서 나는 최대로 이익을 보는 가격
+        let bestBid = Math.ceil((excludeFeeGold - individualGold) / 1.1) + 1;
+        // let bestBid = Math.ceil(bidPrice / 1.1) + 1;
+
+        return {
+            individualGold,
+            bidPrice,
+            bestBid
+        }
+    }
+
+    result['gold'] = gold;
+    result['excludeFee'] = excludeFeeGold;
+
+    let fourResult = calculator(4);
+    let eightResult = calculator(8);
+
+    result['4'] = fourResult;
+    result['8'] = eightResult;
+    if (person > 0) {
+        let customResult = calculator(person);
+        result['custom'] = customResult;
+    }
+
+    return result;
+}
+
 module.exports = {
     getInfo,
     getCrystal,
     getExpandCharacter,
-    getEventList
+    getEventList,
+    getDistributeAmount
 };
