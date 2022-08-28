@@ -121,24 +121,31 @@ async function getInfo(name) {
         //jewels를 높은 레벨과 레벨 별 멸화/홍염으로 정리
         jewels = _.reverse(_.sortBy(jewels, ['level', 'type']));
 
-        //보석의 스킬 상세 정보를 획득 하기위함
-        let jewelDetails = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li');
-        // console.dir(jewelDetails);
-        for (let _jewelDetail of jewelDetails) {
-            //해당 slot의 보석 데이터를 획득
-            let jewelDetailHtml = cheerio.load(_jewelDetail);
-            let jewelSlot = jewelDetailHtml(`span.slot`);
-            let skillName = jewelDetailHtml(`strong.skill_tit`);
-            //gemId로 데이터 매칭
-            let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
+        try {
+            //보석의 스킬 상세 정보를 획득 하기위함
+            let jewelDetails = html('#profile-jewel > div > div.jewel-effect__list > div > ul > li');
+            // console.dir(jewelDetails);
+            for (let _jewelDetail of jewelDetails) {
+                //해당 slot의 보석 데이터를 획득
+                let jewelDetailHtml = cheerio.load(_jewelDetail);
+                let jewelSlot = jewelDetailHtml(`span.slot`);
+                let skillName = jewelDetailHtml(`strong.skill_tit`);
+                //gemId로 데이터 매칭
+                let gemId = _.get(jewelSlot, '0.attribs.data-gemkey');
 
-            //실제 스킬 정보를 획득
-            let jewelInfo = jewelDetailHtml('p.skill_detail');
+                //실제 스킬 정보를 획득
+                let jewelInfo = jewelDetailHtml('p.skill_detail');
 
-            let jewelObj = _.find(jewels, { gemId });
-            jewelObj.info = jewelInfo.text();
-            jewelObj.name = skillName.text();
+                let jewelObj = _.find(jewels, { gemId });
+                jewelObj.info = jewelInfo.text();
+                jewelObj.name = skillName.text();
+            }
         }
+        catch (e) {
+            // 3티어 이상의 보석을 추출하지않으면, 기존의 jewels에 데이터가 없어서 처리되지않음
+            // 그래서 error를 무시함
+        }
+
     }
 
     // If use the getCollection post method, obtain information from the document.
