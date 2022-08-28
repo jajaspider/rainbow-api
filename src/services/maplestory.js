@@ -49,7 +49,6 @@ async function getInfo(name) {
             continue;
         }
 
-
         let characterTd = cheerio.load(characterRow.children);
         let tds = characterTd('td');
         // console.dir(tds);
@@ -59,6 +58,7 @@ async function getInfo(name) {
 
         let ranking = characterTd('td > p').text().replace(/\n/g, '').replace(/ +/g, " ").trim().split(" ");
         let imgSrc = characterTd('td > span.char_img > img').attr().src;
+        let worldSrc = characterTd('td > dl > dt > a > img').attr().src;
         let characterName = characterTd('td > dl > dt > a').text();
         let characterClass = characterTd('td > dl > dd').text().split("/")[1].trim();
         let characterLevel = _.get(tds[2], 'children.0.data');
@@ -86,6 +86,7 @@ async function getInfo(name) {
             exp: characterExp,
             pop: characterPop,
             guild: characterGuild,
+            worldSrc,
             img: imgSrc,
             ranking: {
                 current: ranking[0],
