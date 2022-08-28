@@ -1,10 +1,26 @@
 const _ = require("lodash");
 const axios = require('axios');
 const cheerio = require('cheerio');
+const DB = require('../models'),
+    Character = DB.LostarkCharacter;
 
 async function getInfo(name) {
     // 2022. 02. 02
     // 캐릭터 데이터를 뽑아오기전에 마지막으로 업데이트한시간을 찾아서 5분내면 db데이터를 return 그게아니라면 업데이트
+    let existCharacter = await Character.findOne({ name: name }).sort({ createdAt: -1 });
+    existCharacter = JSON.parse(JSON.stringify(existCharacter));
+    // 이미 캐릭터가 있다면
+    if (existCharacter) {
+        let prevDate = new Date(_.get(existCharacter, 'createdAt'));
+        let currDate = new Date();
+
+        //차이나는 시간을 계산해서
+        let mins = Number.parseFloat((currDate - prevDate) / 1000 / 60);
+        //5분이하라면 기존 데이터 리턴
+        if (mins <= 5.0) {
+            return _.get(existCharacter, 'character');
+        }
+    }
 
     let result = await axios.get(`https://lostark.game.onstove.com/Profile/Character/${encodeURIComponent(name)}`);
     if (result.status != 200) {
@@ -208,6 +224,11 @@ async function getInfo(name) {
         jewel: jewels,
         collection: collectionList
     }
+
+    await Character.create({
+        name: nickname,
+        character
+    })
 
     return character;
 }
