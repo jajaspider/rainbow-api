@@ -286,7 +286,7 @@ async function getExpandCharacter(name) {
         let characters = html(`#expand-character-list > ul:nth-child(${3 + i * 2}) > li > span > button > span`);
 
         for (let character of characters) {
-            let _characterInfo = await getInfo(encodeURIComponent(_.get(character, 'children.0.data')));
+            let _characterInfo = await getInfo(_.get(character, 'children.0.data'));
             // let _characterInfo = await axios.get(`http://127.0.0.1:30003/v0/lostark/info/${}`);
 
             let itemLevelStr = _.get(_characterInfo, 'itemLevel');
