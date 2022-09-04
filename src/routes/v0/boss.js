@@ -33,13 +33,6 @@ router.put('/money', async function (req, res, next) {
         isSuccess: false,
     };
 
-    if (!_.get(req.body, 'game')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: "body game data required"
-        }
-        return res.json(resPayload);
-    }
     if (!_.get(req.body, 'name')) {
         resPayload.isSuccess = false;
         resPayload.payload = {
@@ -84,13 +77,6 @@ router.put('/reward', async function (req, res, next) {
         isSuccess: false,
     };
 
-    if (!_.get(req.body, 'game')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: "body game data required"
-        }
-        return res.json(resPayload);
-    }
     if (!_.get(req.body, 'name')) {
         resPayload.isSuccess = false;
         resPayload.payload = {
@@ -120,7 +106,7 @@ router.put('/reward', async function (req, res, next) {
         return res.json(resPayload);
     }
 
-    let result = await bossService.editRewards(req.body);
+    let result = await bossService.editReward(req.body);
     if (_.get(result, 'errorInfo')) {
         resPayload.isSuccess = false;
         resPayload.payload = {
@@ -186,13 +172,6 @@ router.post('/reward', async function (req, res, next) {
         isSuccess: false,
     };
 
-    if (!_.get(req.body, 'game')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: "body game data required"
-        }
-        return res.json(resPayload);
-    }
     if (!_.get(req.body, 'name')) {
         resPayload.isSuccess = false;
         resPayload.payload = {
@@ -237,13 +216,6 @@ router.delete('/reward', async function (req, res, next) {
         isSuccess: false,
     };
 
-    if (!_.get(req.body, 'game')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: "body game data required"
-        }
-        return res.json(resPayload);
-    }
     if (!_.get(req.body, 'name')) {
         resPayload.isSuccess = false;
         resPayload.payload = {

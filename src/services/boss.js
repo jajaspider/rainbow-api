@@ -19,13 +19,12 @@ async function getRewards(name, level, game) {
 }
 
 async function editMoney(bodyData) {
-    let game = _.get(bodyData, 'game');
     let name = _.get(bodyData, 'name');
     let level = _.get(bodyData, 'level');
     let money = _.get(bodyData, 'money');
 
     try {
-        let bossReward = await Boss.findOneAndUpdate({ name, level, game }, { money }, { new: true });
+        let bossReward = await Boss.findOneAndUpdate({ name, level }, { money }, { new: true });
         if (!bossReward) {
             return {
                 errorInfo: "정보 없음"
@@ -41,15 +40,14 @@ async function editMoney(bodyData) {
     }
 }
 
-async function editRewards(bodyData) {
-    let game = _.get(bodyData, 'game');
+async function editReward(bodyData) {
     let name = _.get(bodyData, 'name');
     let level = _.get(bodyData, 'level');
     let prev = _.get(bodyData, 'prev');
     let curr = _.get(bodyData, 'curr');
 
     try {
-        let bossReward = await Boss.findOne({ name, level, game });
+        let bossReward = await Boss.findOne({ name, level });
         if (!bossReward) {
             return {
                 errorInfo: "보스 정보 없음"
@@ -68,7 +66,7 @@ async function editRewards(bodyData) {
         }
         rewards[rewardIndex] = curr;
 
-        let result = await Boss.findOneAndUpdate({ name, level, game }, { rewards }, { new: true });
+        let result = await Boss.findOneAndUpdate({ name, level }, { rewards }, { new: true });
         return result;
     }
     catch (e) {
@@ -102,12 +100,11 @@ async function registrationBoss(bodyData) {
 }
 
 async function insertReward(bodyData) {
-    let game = _.get(bodyData, 'game');
     let name = _.get(bodyData, 'name');
     let level = _.get(bodyData, 'level');
     let reward = _.get(bodyData, 'reward');
 
-    let bossReward = await Boss.findOne({ name, level, game });
+    let bossReward = await Boss.findOne({ name, level });
     if (!bossReward) {
         return {
             errorInfo: "보스 정보 없음"
@@ -117,18 +114,17 @@ async function insertReward(bodyData) {
     let rewards = _.get(bossReward, 'rewards');
     rewards.push(reward);
 
-    let result = await Boss.findOneAndUpdate({ name, level, game }, { rewards }, { new: true });
+    let result = await Boss.findOneAndUpdate({ name, level }, { rewards }, { new: true });
     return result;
 }
 
 async function deleteReward(bodyData) {
-    let game = _.get(bodyData, 'game');
     let name = _.get(bodyData, 'name');
     let level = _.get(bodyData, 'level');
     let reward = _.get(bodyData, 'reward');
 
     try {
-        let bossReward = await Boss.findOne({ name, level, game });
+        let bossReward = await Boss.findOne({ name, level });
         if (!bossReward) {
             return {
                 errorInfo: "보스 정보 없음"
@@ -153,7 +149,7 @@ async function deleteReward(bodyData) {
             return _reward != reward;
         });
 
-        let result = await Boss.findOneAndUpdate({ name, level, game }, { rewards }, { new: true });
+        let result = await Boss.findOneAndUpdate({ name, level }, { rewards }, { new: true });
         return result;
     }
     catch (e) {
@@ -161,11 +157,10 @@ async function deleteReward(bodyData) {
     }
 }
 
-
 module.exports = {
     getRewards,
     editMoney,
-    editRewards,
+    editReward,
     registrationBoss,
     insertReward,
     deleteReward,
