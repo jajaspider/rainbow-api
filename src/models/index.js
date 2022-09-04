@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const selectionSchema = require('./selection');
 const noticeSchema = require('./notice');
 const customImageSchema = require('./customImage');
-const mapleClassSchema = require('./mapleClass');
-const lostarkCharacterSchema = require('./lostarkCharacter');
+const mapleClassSchema = require('./maplestory/mapleClass');
+const lostarkCharacterSchema = require('./lostark/lostarkCharacter');
+const bossSchema = require('./boss');
 
 // const Selection = mongoose.model('Selection', selectionSchema);
 
@@ -13,5 +14,6 @@ module.exports = {
     Notice: noticeSchema,
     CustomImage: customImageSchema,
     MapleClass: mapleClassSchema,
-    LostarkCharacter: lostarkCharacterSchema
+    LostarkCharacter: lostarkCharacterSchema,
+    Boss: bossSchema
 }
