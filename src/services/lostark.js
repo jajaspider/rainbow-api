@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const axios = require('axios');
 const cheerio = require('cheerio');
+
 const DB = require('../models'),
     Character = DB.LostarkCharacter;
 
