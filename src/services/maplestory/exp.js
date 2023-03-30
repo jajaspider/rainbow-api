@@ -1,0 +1,311 @@
+const _ = require("lodash");
+
+const DB = require("../../models");
+const QuestExp = DB.QuestExp;
+const LevelExp = DB.LevelExp;
+
+async function regionQuest(level, region) {}
+
+// pre execute
+async function expOfLevel() {
+  let expObj = {};
+  let level = 10;
+  let requireExp = 1242;
+  let accExp = 3347;
+
+  for (let i = level; i <= 300; i += 1) {
+    // 10 ~ 15 0%
+    if (i < 15) {
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //15 ~ 30 20%
+    else if (15 <= i && i < 30) {
+      requireExp = Math.floor((requireExp * 12) / 10);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //30 ~ 35 0%
+    else if (30 <= i && i < 35) {
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //35 ~ 40 20%
+    else if (35 <= i && i < 40) {
+      requireExp = Math.floor((requireExp * 12) / 10);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //40 ~ 60 8%
+    else if (40 <= i && i < 60) {
+      requireExp = Math.floor((requireExp * 108) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //60 ~ 65 0%
+    else if (60 <= i && i < 65) {
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //65 ~ 75 7.5%
+    else if (65 <= i && i < 75) {
+      requireExp = Math.floor((requireExp * 1075) / 1000);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //75 ~ 90 7%
+    else if (75 <= i && i < 90) {
+      requireExp = Math.floor((requireExp * 107) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //90 ~ 100 6.5%
+    else if (90 <= i && i < 100) {
+      requireExp = Math.floor((requireExp * 1065) / 1000);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //100 ~ 105 0%
+    else if (100 <= i && i < 105) {
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //105 ~ 140 6.5%
+    else if (105 <= i && i < 140) {
+      requireExp = Math.floor((requireExp * 1065) / 1000);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //140 ~ 170 6.5%
+    else if (140 <= i && i < 170) {
+      requireExp = Math.floor((requireExp * 10625) / 10000);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //170 ~ 200 5%
+    else if (170 <= i && i < 200) {
+      requireExp = Math.floor((requireExp * 105) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 200 286.44%
+    else if (i == 200) {
+      requireExp = Math.ceil((requireExp * 3864413077) / 1000000000);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    //201 ~ 210 12%
+    else if (200 < i && i < 210) {
+      requireExp = Math.floor((requireExp * 112) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 210 60%
+    else if (i == 210) {
+      requireExp = Math.floor((requireExp * 160) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 211 ~ 215 11%
+    else if (210 < i && i < 215) {
+      requireExp = Math.floor((requireExp * 111) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 215 30%
+    else if (i == 215) {
+      requireExp = Math.floor((requireExp * 130) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 216 ~ 220 9%
+    else if (215 < i && i < 220) {
+      requireExp = Math.floor((requireExp * 109) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 220 30%
+    else if (i == 220) {
+      requireExp = Math.floor((requireExp * 130) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 220 ~ 225 7%
+    else if (220 < i && i < 225) {
+      requireExp = Math.floor((requireExp * 107) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 225 30%
+    else if (i == 225) {
+      requireExp = Math.floor((requireExp * 138) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 225 ~ 230 5%
+    else if (225 < i && i < 230) {
+      requireExp = Math.floor((requireExp * 105) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 230 60%
+    else if (i == 230) {
+      requireExp = Math.floor((requireExp * 160) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 230 ~ 235 3%
+    else if (230 < i && i < 235) {
+      requireExp = Math.floor((requireExp * 103) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 235 38%
+    else if (i == 235) {
+      requireExp = Math.floor((requireExp * 138) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 235 ~ 240 3%
+    else if (235 < i && i < 240) {
+      requireExp = Math.floor((requireExp * 103) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 240 60%
+    else if (i == 240) {
+      requireExp = Math.floor((requireExp * 160) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 240 ~ 245 3%
+    else if (240 < i && i < 245) {
+      requireExp = Math.floor((requireExp * 103) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 245 38%
+    else if (i == 245) {
+      requireExp = Math.floor((requireExp * 138) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 240 ~ 245 3%
+    else if (245 < i && i < 250) {
+      requireExp = Math.floor((requireExp * 103) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 250 60%
+    else if (i == 250) {
+      requireExp = Math.floor((requireExp * 160) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 250 ~ 260 3%
+    else if (250 < i && i < 260) {
+      requireExp = Math.floor((requireExp * 103) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 260 127.91%
+    else if (i == 260) {
+      requireExp = Math.ceil((requireExp * 2279118316088) / 1000000000000);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 260 ~ 270 1%
+    else if (260 < i && i < 270) {
+      requireExp = Math.floor((requireExp * 101) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 270 102%
+    else if (i == 270) {
+      requireExp = Math.floor((requireExp * 202) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 270 ~ 275 1%
+    else if (270 < i && i < 275) {
+      requireExp = Math.floor((requireExp * 101) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 275 102%
+    else if (i == 275) {
+      requireExp = Math.floor((requireExp * 202) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 275 ~ 280 10%
+    else if (275 < i && i < 280) {
+      requireExp = Math.floor((requireExp * 110) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 280 102%
+    else if (i == 280) {
+      requireExp = Math.floor((requireExp * 202) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 280 ~ 285 10%
+    else if (280 < i && i < 285) {
+      requireExp = Math.floor((requireExp * 110) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 285 102%
+    else if (i == 285) {
+      requireExp = Math.floor((requireExp * 202) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 285 ~ 290 10%
+    else if (285 < i && i < 290) {
+      requireExp = Math.floor((requireExp * 110) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 290 102%
+    else if (i == 290) {
+      requireExp = Math.floor((requireExp * 202) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 290 ~ 295 10%
+    else if (290 < i && i < 295) {
+      requireExp = Math.floor((requireExp * 110) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 295 102%
+    else if (i == 295) {
+      requireExp = Math.floor((requireExp * 202) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 295 ~ 300 10%
+    else if (295 < i && i < 300) {
+      requireExp = Math.floor((requireExp * 110) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 300 50%
+    else if (i == 300) {
+      requireExp = Math.floor((requireExp * 150) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+  }
+
+  let levels = _.keys(expObj);
+  for (let _level of levels) {
+    await LevelExp.create({
+      level: _level,
+      needExp: expObj[_level].requireExp,
+      totalExp: expObj[_level].accExp,
+    });
+  }
+}
