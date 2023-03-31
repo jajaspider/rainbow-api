@@ -4,7 +4,38 @@ const DB = require("../../models");
 const QuestExp = DB.QuestExp;
 const LevelExp = DB.LevelExp;
 
-async function regionQuest(level, region) {}
+const utils = require("../../utils");
+const { ERROR_CODE, RainbowError } = require("../../core/constants");
+
+async function regionQuest(level, region, subQuestCount) {
+  let requireExp = await LevelExp.findOne({ level: level });
+  requireExp = utils.toJSON(requireExp);
+  if (!requireExp) {
+    // causeAnError(404, ERROR_CODE.DATA_NOT_FOUND);
+    // throw new Error("invaild level");
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  let questReward = await QuestExp.findOne({ region });
+  questReward = utils.toJSON(questReward);
+  if (!questReward) {
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild region`,
+    });
+  }
+
+  let needExp = _.get(requireExp, "needExp");
+  let fillExp = _.get(questReward, "exp");
+  fillExp += _.get(questReward, "subExp", 0) * subQuestCount;
+
+  return ((fillExp * 100) / needExp).toFixed(3);
+}
 
 // pre execute
 async function expOfLevel() {
@@ -309,3 +340,7 @@ async function expOfLevel() {
     });
   }
 }
+
+module.exports = {
+  regionQuest,
+};

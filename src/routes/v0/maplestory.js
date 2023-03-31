@@ -1,127 +1,170 @@
-const express = require('express');
+const _ = require("lodash");
+const express = require("express");
 const router = express.Router();
-const maplestoryService = require('../../services/maplestory');
-const _ = require('lodash');
+const maplestoryService1 = require("../../services/maplestory.service.js");
 
-router.get('/info/:name', async function (req, res, next) {
-    let resPayload = {
-        isSuccess: false,
-    };
+const maplestoryService = require("../../services/maplestory/index");
+const { ERROR_CODE, RainbowError } = require("../../core/constants");
 
-    let result = await maplestoryService.getInfo(req.params.name);
-    if (_.get(result, 'errorInfo')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: _.get(result, 'errorInfo')
-        }
-        return res.json(resPayload);
-    }
+router.get("/info/:name", async function (req, res, next) {
+  let resPayload = {
+    isSuccess: false,
+  };
 
-    resPayload.isSuccess = true;
+  let result = await maplestoryService1.getInfo(req.params.name);
+  if (_.get(result, "errorInfo")) {
+    resPayload.isSuccess = false;
     resPayload.payload = {
-        character: result
-    }
+      message: _.get(result, "errorInfo"),
+    };
     return res.json(resPayload);
+  }
+
+  resPayload.isSuccess = true;
+  resPayload.payload = {
+    character: result,
+  };
+  return res.json(resPayload);
 });
 
-router.get('/starforce/:level/:star', async function (req, res, next) {
-    let resPayload = {
-        isSuccess: false,
-    };
+router.get("/starforce/:level/:star", async function (req, res, next) {
+  let resPayload = {
+    isSuccess: false,
+  };
 
-    let result = await maplestoryService.getStarForce(req.params.level, req.params.star);
-    if (_.get(result, 'errorInfo')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: _.get(result, 'errorInfo')
-        }
-        return res.json(resPayload);
-    }
-
-    resPayload.isSuccess = true;
+  let result = await maplestoryService1.getStarForce(
+    req.params.level,
+    req.params.star
+  );
+  if (_.get(result, "errorInfo")) {
+    resPayload.isSuccess = false;
     resPayload.payload = {
-        starforce: result
-    }
+      message: _.get(result, "errorInfo"),
+    };
     return res.json(resPayload);
+  }
+
+  resPayload.isSuccess = true;
+  resPayload.payload = {
+    starforce: result,
+  };
+  return res.json(resPayload);
 });
 
-router.get('/growth/:level', async function (req, res, next) {
-    let resPayload = {
-        isSuccess: false,
-    };
+router.get("/growth/:level", async function (req, res, next) {
+  let resPayload = {
+    isSuccess: false,
+  };
 
-    if (!_.get(req.body, 'type')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: "type을 확인하세요"
-        }
-        return res.json(resPayload);
-    }
-
-    let result = maplestoryService.getGrowthPer(req.body.type, req.params.level);
-
-    resPayload.isSuccess = true;
+  if (!_.get(req.body, "type")) {
+    resPayload.isSuccess = false;
     resPayload.payload = {
-        percent: result
-    }
+      message: "type을 확인하세요",
+    };
     return res.json(resPayload);
+  }
+
+  let result = maplestoryService1.getGrowthPer(req.body.type, req.params.level);
+
+  resPayload.isSuccess = true;
+  resPayload.payload = {
+    percent: result,
+  };
+  return res.json(resPayload);
 });
 
-router.get('/union/:name', async function (req, res, next) {
-    let resPayload = {
-        isSuccess: false,
-    };
+router.get("/union/:name", async function (req, res, next) {
+  let resPayload = {
+    isSuccess: false,
+  };
 
-    let result = await maplestoryService.getUnionInfo(req.params.name);
-    if (_.get(result, 'errorInfo')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: _.get(result, 'errorInfo')
-        }
-        return res.json(resPayload);
-    }
-
-    resPayload.isSuccess = true;
+  let result = await maplestoryService1.getUnionInfo(req.params.name);
+  if (_.get(result, "errorInfo")) {
+    resPayload.isSuccess = false;
     resPayload.payload = {
-        character: result
-    }
+      message: _.get(result, "errorInfo"),
+    };
     return res.json(resPayload);
+  }
+
+  resPayload.isSuccess = true;
+  resPayload.payload = {
+    character: result,
+  };
+  return res.json(resPayload);
 });
 
-router.get('/event', async function (req, res, next) {
-    let resPayload = {
-        isSuccess: false,
-    };
+router.get("/event", async function (req, res, next) {
+  let resPayload = {
+    isSuccess: false,
+  };
 
-    let result = await maplestoryService.getEventList();
+  let result = await maplestoryService1.getEventList();
 
-    resPayload.isSuccess = true;
-    resPayload.payload = {
-        events: result
-    }
-    return res.json(resPayload);
+  resPayload.isSuccess = true;
+  resPayload.payload = {
+    events: result,
+  };
+  return res.json(resPayload);
 });
 
-router.get('/symbol/:start/:end', async function (req, res, next) {
-    let resPayload = {
-        isSuccess: false,
-    };
+router.get("/symbol/:start/:end", async function (req, res, next) {
+  let resPayload = {
+    isSuccess: false,
+  };
 
-    let result = await maplestoryService.getSymbol(req.params.start, req.params.end);
-    if (_.get(result, 'errorInfo')) {
-        resPayload.isSuccess = false;
-        resPayload.payload = {
-            message: _.get(result, 'errorInfo')
-        }
-        return res.json(resPayload);
-    }
-
-    resPayload.isSuccess = true;
+  let result = await maplestoryService1.getSymbol(
+    req.params.start,
+    req.params.end
+  );
+  if (_.get(result, "errorInfo")) {
+    resPayload.isSuccess = false;
     resPayload.payload = {
-        symbol: result
-    }
+      message: _.get(result, "errorInfo"),
+    };
     return res.json(resPayload);
+  }
+
+  resPayload.isSuccess = true;
+  resPayload.payload = {
+    symbol: result,
+  };
+  return res.json(resPayload);
 });
 
+router.post("/exp/quest", async function (req, res, next) {
+  try {
+    let reqBody = req.body;
+    let level = _.get(reqBody, "level");
+    if (!level) {
+      return res.status(400).send({
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `level is required`,
+      });
+    }
+    let region = _.get(reqBody, "region");
+    if (!region) {
+      return res.status(400).send({
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `region is required`,
+      });
+    }
+    let subCount = _.get(reqBody, "subCount", 0);
+
+    let raiseUpExp = await maplestoryService.exp.regionQuest(
+      level,
+      region,
+      subCount
+    );
+    return res.json(raiseUpExp);
+  } catch (e) {
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
 
 module.exports = router;

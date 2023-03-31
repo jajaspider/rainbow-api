@@ -1,12 +1,9 @@
-const _ = require('lodash');
+const _ = require("lodash");
 
 function toJSON(dbData) {
-    dbData = _.map(dbData, (_class) => {
-        _class._doc._id = _class._doc._id.valueOf();
-        return _class._doc
-    });
+  dbData = JSON.parse(JSON.stringify(dbData));
 
-    return dbData;
+  return dbData;
 }
 
 module.exports = { toJSON };
