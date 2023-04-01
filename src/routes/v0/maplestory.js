@@ -167,4 +167,27 @@ router.post("/exp/quest", async function (req, res, next) {
   }
 });
 
+router.post("/exp/monsterpark", async function (req, res, next) {
+  try {
+    let reqBody = req.body;
+    let level = _.get(reqBody, "level");
+    if (!level) {
+      return res.status(400).send({
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `level is required`,
+      });
+    }
+
+    let raiseUpExp = await maplestoryService.exp.getMonsterPark(level);
+    return res.json(raiseUpExp);
+  } catch (e) {
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
 module.exports = router;

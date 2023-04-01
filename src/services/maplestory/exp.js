@@ -3,6 +3,7 @@ const _ = require("lodash");
 const DB = require("../../models");
 const QuestExp = DB.QuestExp;
 const LevelExp = DB.LevelExp;
+const MonsterParkExp = DB.MonsterParkExp;
 
 const utils = require("../../utils");
 const { ERROR_CODE, RainbowError } = require("../../core/constants");
@@ -35,6 +36,32 @@ async function regionQuest(level, region, subQuestCount) {
   fillExp += _.get(questReward, "subExp", 0) * subQuestCount;
 
   return ((fillExp * 100) / needExp).toFixed(3);
+}
+
+async function getMonsterPark(level) {
+  let gatherExp = await MonsterParkExp.findOne({ level: level });
+  gatherExp = utils.toJSON(gatherExp);
+  if (!gatherExp) {
+    // causeAnError(404, ERROR_CODE.DATA_NOT_FOUND);
+    // throw new Error("invaild level");
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  let requireExp = await LevelExp.findOne({ level: level });
+  requireExp = utils.toJSON(requireExp);
+  if (!requireExp) {
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  return ((gatherExp * 100) / needExp).toFixed(3);
 }
 
 // pre execute
@@ -341,6 +368,33 @@ async function expOfLevel() {
   }
 }
 
+// pre execute
+async function expOfMonsterPark() {
+  let monsterParkExp = {};
+
+  let level = 260;
+  for (let i = level; i <= 300; i += 1) {
+    if (i < 270) {
+      monsterParkExp[i] = i * 204000000;
+    } else if (270 <= i && i < 275) {
+      monsterParkExp[i] = i * 300000000;
+    } else if (275 <= i && i < 280) {
+      monsterParkExp[i] = i * 384000000;
+    } else if (280 <= i && i < 300) {
+      monsterParkExp[i] = i * 432000000;
+    }
+  }
+
+  let levels = _.keys(monsterParkExp);
+  for (let _level of levels) {
+    await MonsterParkExp.create({
+      level: _level,
+      exp: monsterParkExp[_level],
+    });
+  }
+}
+
 module.exports = {
   regionQuest,
+  getMonsterPark,
 };
