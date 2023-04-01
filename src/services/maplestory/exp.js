@@ -61,6 +61,8 @@ async function getMonsterPark(level) {
     });
   }
 
+  let needExp = _.get(requireExp, "needExp");
+
   return ((gatherExp * 100) / needExp).toFixed(3);
 }
 
