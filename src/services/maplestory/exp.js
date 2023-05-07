@@ -8,7 +8,7 @@ const MonsterParkExp = DB.MonsterParkExp;
 const utils = require("../../utils");
 const { ERROR_CODE, RainbowError } = require("../../core/constants");
 
-async function regionQuest(level, region, subQuestCount) {
+async function regionQuest(level, region = null, subQuestCount = 0) {
   let requireExp = await LevelExp.findOne({ level: level });
   requireExp = utils.toJSON(requireExp);
   if (!requireExp) {
@@ -21,9 +21,21 @@ async function regionQuest(level, region, subQuestCount) {
     });
   }
 
-  let questReward = await QuestExp.findOne({ region });
-  questReward = utils.toJSON(questReward);
-  if (!questReward) {
+  let query = {};
+  if (region) {
+    query = {
+      region,
+      requireLevel: { $lte: level },
+    };
+  } else {
+    query = {
+      requireLevel: { $lte: level },
+    };
+  }
+
+  let questRewards = await QuestExp.find(query);
+  questRewards = utils.toJSON(questRewards);
+  if (_.isEmpty(questRewards)) {
     throw new RainbowError({
       httpCode: 404,
       error: ERROR_CODE.DATA_NOT_FOUND,
@@ -31,11 +43,58 @@ async function regionQuest(level, region, subQuestCount) {
     });
   }
 
-  let needExp = _.get(requireExp, "needExp");
-  let fillExp = _.get(questReward, "exp");
-  fillExp += _.get(questReward, "subExp", 0) * subQuestCount;
+  let raiseExp = 0;
+  for (let _reward of questRewards) {
+    let questExp = _.get(_reward, "exp");
+    let subQuestExp = _.get(_reward, "subExp", 0) * subQuestCount;
 
-  return ((fillExp * 100) / needExp).toFixed(3);
+    raiseExp += questExp;
+    raiseExp += subQuestExp;
+  }
+
+  let needExp = _.get(requireExp, "needExp");
+
+  return ((raiseExp * 100) / needExp).toFixed(3);
+}
+
+async function continentQuest(level, continent, subQuestCount = 0) {
+  let requireExp = await LevelExp.findOne({ level: level });
+  requireExp = utils.toJSON(requireExp);
+  if (!requireExp) {
+    // causeAnError(404, ERROR_CODE.DATA_NOT_FOUND);
+    // throw new Error("invaild level");
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  let questRewards = await QuestExp.find({
+    continent: continent,
+    requireLevel: { $lte: level },
+  });
+  questRewards = utils.toJSON(questRewards);
+  if (_.isEmpty(questRewards)) {
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild continent`,
+    });
+  }
+
+  let raiseExp = 0;
+  for (let _reward of questRewards) {
+    let questExp = _.get(_reward, "exp");
+    let subQuestExp = _.get(_reward, "subExp", 0) * subQuestCount;
+
+    raiseExp += questExp;
+    raiseExp += subQuestExp;
+  }
+
+  let needExp = _.get(requireExp, "needExp");
+
+  return ((raiseExp * 100) / needExp).toFixed(3);
 }
 
 async function getMonsterPark(level) {
@@ -400,4 +459,5 @@ async function expOfMonsterPark() {
 module.exports = {
   regionQuest,
   getMonsterPark,
+  continentQuest,
 };

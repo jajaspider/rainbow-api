@@ -142,21 +142,36 @@ router.post("/exp/quest", async function (req, res, next) {
         reason: `level is required`,
       });
     }
-    let region = _.get(reqBody, "region");
-    if (!region) {
-      return res.status(400).send({
-        error: ERROR_CODE.MISSING_PARAMETER,
-        reason: `region is required`,
-      });
-    }
+    let region = _.get(reqBody, "region", null);
+    let continent = _.get(reqBody, "continent", null);
+
     let subCount = _.get(reqBody, "subCount", 0);
 
-    let raiseUpExp = await maplestoryService.exp.regionQuest(
-      level,
-      region,
-      subCount
-    );
-    return res.json(raiseUpExp);
+    //  대륙과 지역 동시에 입력
+    if (region && continent) {
+      return res.status(204).send({
+        error: ERROR_CODE.DATA_NOT_FOUND,
+        reason: `region and continent cannot be entered at the same request`,
+      });
+    }
+    // 대륙만 입력
+    else if (continent) {
+      let raiseUpExp = await maplestoryService.exp.continentQuest(
+        level,
+        continent,
+        subCount
+      );
+      return res.json(raiseUpExp);
+    }
+    // 지역이 입력되었거나, 입력이 안되어있을수도있음
+    else {
+      let raiseUpExp = await maplestoryService.exp.regionQuest(
+        level,
+        region,
+        subCount
+      );
+      return res.json(raiseUpExp);
+    }
   } catch (e) {
     console.dir(e);
 
