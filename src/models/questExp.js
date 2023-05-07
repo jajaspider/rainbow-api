@@ -16,6 +16,14 @@ const questExpSchema = new mongoose.Schema(
       type: Types.Number,
       required: true,
     },
+    continent: {
+      type: Types.String,
+      required: true,
+    },
+    requireLevel: {
+      type: Types.Number,
+      required: true,
+    },
   },
   {
     timestamps: true,
