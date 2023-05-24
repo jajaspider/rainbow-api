@@ -1,5 +1,7 @@
-const exp = require('./exp');
+const exp = require("./exp");
+const info = require("./info");
 
 module.exports = {
-    exp: exp,
-}
+  exp,
+  info,
+};
