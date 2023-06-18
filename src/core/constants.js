@@ -7,6 +7,10 @@ const ERROR_CODE = {
     code: "A0002",
     message: "parameter required",
   },
+  INVALID_PARAMETER: {
+    code: "A0003",
+    message: "invalid parameter",
+  },
 };
 
 class RainbowError extends Error {

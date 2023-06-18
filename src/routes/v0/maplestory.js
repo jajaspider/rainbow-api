@@ -102,27 +102,30 @@ router.get("/event", async function (req, res, next) {
 });
 
 router.get("/symbol/:start/:end", async function (req, res, next) {
-  let resPayload = {
-    isSuccess: false,
-  };
-
-  let result = await maplestoryService1.getSymbol(
-    req.params.start,
-    req.params.end
-  );
-  if (_.get(result, "errorInfo")) {
-    resPayload.isSuccess = false;
-    resPayload.payload = {
-      message: _.get(result, "errorInfo"),
-    };
-    return res.json(resPayload);
+  if (
+    _.isNaN(parseInt(req.params.start)) ||
+    _.isNaN(parseInt(req.params.end))
+  ) {
+    return res.status(400).send({
+      error: ERROR_CODE.INVALID_PARAMETER,
+      reason: `invalid parameter`,
+    });
   }
 
-  resPayload.isSuccess = true;
-  resPayload.payload = {
-    symbol: result,
-  };
-  return res.json(resPayload);
+  try {
+    let calc = await maplestoryService.symbol.getSymbolCalc(
+      parseInt(req.params.start),
+      parseInt(req.params.end)
+    );
+    return res.json(calc);
+  } catch (e) {
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
 });
 
 router.post("/exp/quest", async function (req, res, next) {
