@@ -220,9 +220,9 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 210 60%
+    // 210 30%
     else if (i == 210) {
-      requireExp = Math.floor((requireExp * 160) / 100);
+      requireExp = Math.floor((requireExp * 130) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -258,19 +258,19 @@ async function expOfLevel() {
     }
     // 225 30%
     else if (i == 225) {
-      requireExp = Math.floor((requireExp * 138) / 100);
+      requireExp = Math.floor((requireExp * 130) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 225 ~ 230 5%
+    // 225 ~ 230 7%
     else if (225 < i && i < 230) {
-      requireExp = Math.floor((requireExp * 105) / 100);
+      requireExp = Math.floor((requireExp * 107) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 230 60%
+    // 230 30%
     else if (i == 230) {
-      requireExp = Math.floor((requireExp * 160) / 100);
+      requireExp = Math.floor((requireExp * 130) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -280,9 +280,9 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 235 38%
+    // 235 30%
     else if (i == 235) {
-      requireExp = Math.floor((requireExp * 138) / 100);
+      requireExp = Math.floor((requireExp * 130) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -292,9 +292,9 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 240 60%
+    // 240 30%
     else if (i == 240) {
-      requireExp = Math.floor((requireExp * 160) / 100);
+      requireExp = Math.floor((requireExp * 130) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -304,9 +304,9 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 245 38%
+    // 245 30%
     else if (i == 245) {
-      requireExp = Math.floor((requireExp * 138) / 100);
+      requireExp = Math.floor((requireExp * 130) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -316,9 +316,9 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 250 60%
+    // 250 50%
     else if (i == 250) {
-      requireExp = Math.floor((requireExp * 160) / 100);
+      requireExp = Math.floor((requireExp * 150) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -328,21 +328,33 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 260 127.91%
+    // 260 200%
     else if (i == 260) {
-      requireExp = Math.ceil((requireExp * 2279118316088) / 1000000000000);
+      requireExp = Math.floor((requireExp * 300) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 260 ~ 270 1%
-    else if (260 < i && i < 270) {
+    // 260 ~ 265 1%
+    else if (260 < i && i < 265) {
       requireExp = Math.floor((requireExp * 101) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 270 102%
+    // 265 30%
+    else if (i == 265) {
+      requireExp = Math.floor((requireExp * 130) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 265 ~ 270 1%
+    else if (265 < i && i < 270) {
+      requireExp = Math.floor((requireExp * 101) / 100);
+      accExp += requireExp;
+      expObj[i] = { requireExp, accExp };
+    }
+    // 270 122%
     else if (i == 270) {
-      requireExp = Math.floor((requireExp * 202) / 100);
+      requireExp = Math.floor((requireExp * 222) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
@@ -406,14 +418,14 @@ async function expOfLevel() {
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 295 ~ 300 10%
-    else if (295 < i && i < 300) {
+    // 295 ~ 299 10%
+    else if (295 < i && i < 299) {
       requireExp = Math.floor((requireExp * 110) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
     }
-    // 300 50%
-    else if (i == 300) {
+    // 299 50%
+    else if (i == 299) {
       requireExp = Math.floor((requireExp * 150) / 100);
       accExp += requireExp;
       expObj[i] = { requireExp, accExp };
