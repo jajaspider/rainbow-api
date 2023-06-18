@@ -8,6 +8,7 @@ const lostarkCharacterSchema = require("./lostarkCharacter");
 const questExpSchema = require("./questExp");
 const levelExpSchema = require("./levelExp");
 const monsterParkExpSchema = require("./monsterParkExp");
+const SymbolSchema = require("./symbol");
 
 // const Selection = mongoose.model('Selection', selectionSchema);
 
@@ -20,4 +21,5 @@ module.exports = {
   QuestExp: questExpSchema,
   LevelExp: levelExpSchema,
   MonsterParkExp: monsterParkExpSchema,
+  Symbol: SymbolSchema,
 };
