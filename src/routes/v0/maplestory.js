@@ -128,6 +128,29 @@ router.get("/symbol/:start/:end", async function (req, res, next) {
   }
 });
 
+router.post("/symbol/growth", async function (req, res, next) {
+  let level = _.get(req, "body.level");
+  let count = _.get(req, "body.count");
+  if (_.isNaN(parseInt(level)) || _.isNaN(parseInt(count))) {
+    return res.status(400).send({
+      error: ERROR_CODE.INVALID_PARAMETER,
+      reason: `invalid parameter`,
+    });
+  }
+
+  try {
+    let calc = await maplestoryService.symbol.getSymbolGrwoth(level, count);
+    return res.json(calc);
+  } catch (e) {
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
 router.post("/exp/quest", async function (req, res, next) {
   try {
     let reqBody = req.body;
