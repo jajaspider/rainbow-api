@@ -125,25 +125,22 @@ async function getSymbolCalc(startLevel, endLevel) {
 
 async function getSymbolGrwoth(symbolLevel, currentSymbol) {
   let result = {
+    requireAthentic: 0,
     cerniumDate: null,
-    cerniumMeso: 0,
+    cerniumDay: 0,
     arthenticDate: null,
-    arcusMeso: 0,
-    odiumMeso: 0,
-    shangriLaMeso: 0,
+    arthenticDay: 0,
 
+    requireArcane: 0,
     arcaneDate: null,
-    journeyMeso: 0,
-    chuchuMeso: 0,
-    lacheleinMeso: 0,
-    arcanaMeso: 0,
-    morassMeso: 0,
-    esferaMeso: 0,
+    arcaneWeek: 0,
+    arcaneDay: 0,
   };
 
   if (symbolLevel < 11) {
     let athentic = await getSymbolCalc(symbolLevel, 11);
     let requireAthentic = athentic.requireAthenticSymbol - currentSymbol;
+    result.requireAthentic = requireAthentic;
 
     let cerniumDate = dayjs();
     let athenticDate = dayjs();
@@ -155,6 +152,7 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
       Math.floor(requireAthentic / supplyCerniumSymbol) + 1,
       "d"
     );
+
     athenticDate = athenticDate.add(
       Math.floor(requireAthentic / supplyAthenticSymbol) + 1,
       "d"
@@ -164,19 +162,19 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
     result.cerniumDate = `${cerniumDate.get("y")}-${
       cerniumDate.get("M") + 1
     }-${cerniumDate.get("D")}`;
-    result.cerniumMeso = athentic.cerniumMeso;
+    result.cerniumDay = Math.floor(requireAthentic / supplyCerniumSymbol) + 1;
 
     // 이후 지역 날짜 및 메소
     result.arthenticDate = `${athenticDate.get("y")}-${
       athenticDate.get("M") + 1
     }-${athenticDate.get("D")}`;
-    result.arcusMeso = athentic.arcusMeso;
-    result.odiumMeso = athentic.odiumMeso;
-    result.shangriLaMeso = athentic.shangriLaMeso;
+    result.arthenticDay =
+      Math.floor(requireAthentic / supplyAthenticSymbol) + 1;
   }
 
   let arcane = await getSymbolCalc(symbolLevel, 20);
   let requireArcane = arcane.requireArcaneSymbol - currentSymbol;
+  result.requireArcane = requireArcane;
 
   let arcaneDate = dayjs();
   let week = arcaneDate.get("d");
@@ -204,6 +202,7 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
     let requireWeek = Math.floor(requireArcane / 185);
     requireArcane -= requireWeek * 185;
     arcaneDate = arcaneDate.add(requireWeek, "w");
+    result.arcaneWeek = requireWeek;
   }
 
   while (true) {
@@ -215,6 +214,7 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
 
     requireArcane -= 20;
     arcaneDate = arcaneDate.add(1, "d");
+    result.arcaneDay += 1;
 
     if (requireArcane < 0) {
       break;
@@ -225,13 +225,6 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
   result.arcaneDate = `${arcaneDate.get("y")}-${
     arcaneDate.get("M") + 1
   }-${arcaneDate.get("D")}`;
-
-  result.journeyMeso = arcane.journeyMeso;
-  result.chuchuMeso = arcane.chuchuMeso;
-  result.lacheleinMeso = arcane.lacheleinMeso;
-  result.arcanaMeso = arcane.arcanaMeso;
-  result.morassMeso = arcane.morassMeso;
-  result.esferaMeso = arcane.esferaMeso;
 
   return result;
 }
