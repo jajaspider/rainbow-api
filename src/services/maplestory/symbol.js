@@ -59,7 +59,7 @@ async function getSymbolCalc(startLevel, endLevel) {
   if (endLevel <= 11) {
     let AthenticResult = await Symbol.find({
       type: "Athentic",
-      level: { $gte: startLevel, $lte: endLevel },
+      level: { $gt: startLevel, $lte: endLevel },
     });
     AthenticResult = utils.toJSON(AthenticResult);
 
@@ -87,7 +87,7 @@ async function getSymbolCalc(startLevel, endLevel) {
 
   let arcaneResult = await Symbol.find({
     type: "Arcane",
-    level: { $gte: startLevel, $lte: endLevel },
+    level: { $gt: startLevel, $lte: endLevel },
   });
   arcaneResult = utils.toJSON(arcaneResult);
 
