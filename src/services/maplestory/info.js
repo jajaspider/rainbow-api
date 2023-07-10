@@ -71,7 +71,7 @@ async function character(name) {
   );
 
   for (let characterRow of characterRows) {
-    if (_.get(characterRow, "attribs.class") != "search_com_chk") {
+    if (!_.includes(_.get(characterRow, "attribs.class"), "search_com_chk")) {
       continue;
     }
 
@@ -88,6 +88,7 @@ async function character(name) {
       .replace(/ +/g, " ")
       .trim()
       .split(" ");
+
     let imgSrc = characterTd("td > span.char_img > img").attr().src;
     let worldSrc = characterTd("td > dl > dt > a > img").attr().src;
     let characterName = characterTd("td > dl > dt > a").text();
@@ -166,6 +167,8 @@ async function character(name) {
         time: seedTime || "-",
       },
     };
+
+    console.dir(character);
 
     return character;
   }
