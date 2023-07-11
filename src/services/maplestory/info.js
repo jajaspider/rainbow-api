@@ -71,7 +71,7 @@ async function character(name) {
   );
 
   for (let characterRow of characterRows) {
-    if (_.get(characterRow, "attribs.class") != "search_com_chk") {
+    if (!_.includes(_.get(characterRow, "attribs.class"), "search_com_chk")) {
       continue;
     }
 
@@ -88,6 +88,11 @@ async function character(name) {
       .replace(/ +/g, " ")
       .trim()
       .split(" ");
+
+    if (ranking == "-") {
+      ranking = [characterTd("td > p > img").attr().alt, "-"];
+    }
+
     let imgSrc = characterTd("td > span.char_img > img").attr().src;
     let worldSrc = characterTd("td > dl > dt > a > img").attr().src;
     let characterName = characterTd("td > dl > dt > a").text();
@@ -171,6 +176,77 @@ async function character(name) {
   }
 }
 
+async function union(name) {
+  let url = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURIComponent(
+    name
+  )}&w=0`;
+  let result = await axios.get(url);
+  if (result.status != 200) {
+    return {};
+  }
+
+  let html = cheerio.load(result.data);
+
+  let errorInfo = html(
+    `#container > div > div > div:nth-child(4) > div`
+  ).text();
+  if (errorInfo == "랭킹정보가 없습니다.") {
+    return {
+      errorInfo,
+    };
+  }
+
+  let characterRows = html(
+    "#container > div > div > div:nth-child(4) > table > tbody > tr"
+  );
+
+  for (let characterRow of characterRows) {
+    if (!_.includes(_.get(characterRow, "attribs.class"), "search_com_chk")) {
+      continue;
+    }
+
+    let characterTd = cheerio.load(characterRow.children);
+
+    let unionRanking = characterTd("td:nth-child(1) > p.ranking_other")
+      .text()
+      .replace(/\n/g, "")
+      .replace(/ +/g, " ")
+      .trim();
+
+    if (_.isEmpty(unionRanking)) {
+      unionRanking = characterTd("td > p >img").attr().alt;
+    }
+
+    let unionLevel = characterTd("td:nth-child(3)")
+      .text()
+      .replace(/\n./g, "")
+      .replace(/,/g, "")
+      .replace(/ +/g, " ")
+      .trim();
+    let unionPower = characterTd("td:nth-child(4)")
+      .text()
+      .replace(/\n/g, "")
+      .replace(/,/g, "")
+      .replace(/ +/g, " ")
+      .trim();
+    unionPower = parseInt(unionPower);
+
+    unionCoinPerDay = (unionPower * 8.64) / 10000000;
+    unionCoinPerDay = Math.round(unionCoinPerDay);
+
+    return {
+      name,
+      unionRanking,
+      unionLevel,
+      unionPower,
+      unionCoinPerDay,
+    };
+  }
+
+  // let characterTd = cheerio.load(characterRow[0].children);
+}
+
 module.exports = {
   character,
+  union,
 };

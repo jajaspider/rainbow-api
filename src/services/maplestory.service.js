@@ -184,63 +184,6 @@ async function getClass(type) {
   return _.get(randomOne, "className");
 }
 
-async function getUnionInfo(name) {
-  let url = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURIComponent(
-    name
-  )}&w=0`;
-  let result = await axios.get(url);
-  if (result.status != 200) {
-    return {};
-  }
-
-  let html = cheerio.load(result.data);
-
-  let errorInfo = html(
-    `#container > div > div > div:nth-child(4) > div`
-  ).text();
-  if (errorInfo == "랭킹정보가 없습니다.") {
-    return {
-      errorInfo,
-    };
-  }
-
-  let characterRow = html(
-    "#container > div > div > div:nth-child(4) > table > tbody > tr.search_com_chk"
-  );
-
-  let characterTd = cheerio.load(characterRow[0].children);
-
-  let unionRanking = characterTd("td:nth-child(1) > p.ranking_other")
-    .text()
-    .replace(/\n/g, "")
-    .replace(/ +/g, " ")
-    .trim();
-  let unionLevel = characterTd("td:nth-child(3)")
-    .text()
-    .replace(/\n./g, "")
-    .replace(/,/g, "")
-    .replace(/ +/g, " ")
-    .trim();
-  let unionPower = characterTd("td:nth-child(4)")
-    .text()
-    .replace(/\n/g, "")
-    .replace(/,/g, "")
-    .replace(/ +/g, " ")
-    .trim();
-  unionPower = parseInt(unionPower);
-
-  unionCoinPerDay = (unionPower * 8.64) / 10000000;
-  unionCoinPerDay = Math.round(unionCoinPerDay);
-
-  return {
-    name,
-    unionRanking,
-    unionLevel,
-    unionPower,
-    unionCoinPerDay,
-  };
-}
-
 async function getEventList() {
   const entPoint = "https://maplestory.nexon.com";
   const url = `${entPoint}/News/Event/Ongoing`;
@@ -303,7 +246,6 @@ module.exports = {
   getStarForce,
   getGrowthPer,
   getClass,
-  getUnionInfo,
   getEventList,
   getSymbol,
 };

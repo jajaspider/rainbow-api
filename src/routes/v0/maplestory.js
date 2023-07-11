@@ -67,24 +67,17 @@ router.get("/growth/:level", async function (req, res, next) {
 });
 
 router.get("/union/:name", async function (req, res, next) {
-  let resPayload = {
-    isSuccess: false,
-  };
+  try {
+    let result = await maplestoryService.info.union(req.params.name);
+    return res.json(result);
+  } catch (e) {
+    console.dir(e);
 
-  let result = await maplestoryService1.getUnionInfo(req.params.name);
-  if (_.get(result, "errorInfo")) {
-    resPayload.isSuccess = false;
-    resPayload.payload = {
-      message: _.get(result, "errorInfo"),
-    };
-    return res.json(resPayload);
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
   }
-
-  resPayload.isSuccess = true;
-  resPayload.payload = {
-    character: result,
-  };
-  return res.json(resPayload);
 });
 
 router.get("/event", async function (req, res, next) {
