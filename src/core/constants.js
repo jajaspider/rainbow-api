@@ -11,6 +11,10 @@ const ERROR_CODE = {
     code: "A0003",
     message: "invalid parameter",
   },
+  UNMEASURABLE: {
+    code: "A0004",
+    message: "unmeasurable data",
+  },
 };
 
 class RainbowError extends Error {
