@@ -218,4 +218,72 @@ router.post("/exp/monsterpark", async function (req, res, next) {
   }
 });
 
+router.post("/util/cooldown", async function (req, res, next) {
+  try {
+    let reqBody = req.body;
+    let cooldown = _.get(reqBody, "cooldown");
+    if (!cooldown) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `cooldown is required`,
+      });
+      throw error;
+    }
+
+    try {
+      cooldown = parseInt(cooldown);
+    } catch (e) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.INVALID_PARAMETER,
+        reason: `cooldown must be int.`,
+      });
+      throw error;
+    }
+
+    let mercedes = _.get(reqBody, "mercedes");
+    if (!mercedes) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `mercedes is required`,
+      });
+      throw error;
+    }
+    mercedes = _.lowerCase(mercedes);
+
+    let hat = _.get(reqBody, "hat");
+    if (!hat) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `hat is required`,
+      });
+      throw error;
+    }
+
+    try {
+      hat = parseInt(hat);
+    } catch (e) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.INVALID_PARAMETER,
+        reason: `hat must be int.`,
+      });
+      throw error;
+    }
+
+    let result = maplestoryService.util.cooldown(cooldown, mercedes, hat);
+    return res.json(result);
+  } catch (e) {
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
 module.exports = router;
