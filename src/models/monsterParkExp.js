@@ -4,13 +4,23 @@ const Types = mongoose.Schema.Types;
 // Define Schemes
 const monsterParkExpSchema = new mongoose.Schema(
   {
+    region: {
+      type: Types.String,
+    },
     level: {
       type: Types.String,
-      required: true,
     },
     exp: {
       type: Types.Number,
       required: true,
+    },
+    extreme: {
+      type: Types.Boolean,
+      default: false,
+    },
+    needArcane: {
+      type: Types.Number,
+      default: 0,
     },
   },
   {
