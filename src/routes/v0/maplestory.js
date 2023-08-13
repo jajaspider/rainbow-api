@@ -231,13 +231,12 @@ router.post("/util/cooldown", async function (req, res, next) {
       throw error;
     }
 
-    try {
-      cooldown = parseInt(cooldown);
-    } catch (e) {
+    cooldown = _.toNumber(cooldown);
+    if (_.isNaN(cooldown) || Math.sign(cooldown) != 1) {
       const error = new RainbowError({
         httpCode: 400,
         error: ERROR_CODE.INVALID_PARAMETER,
-        reason: `cooldown must be int.`,
+        reason: `cooldown must be positive`,
       });
       throw error;
     }
@@ -263,13 +262,12 @@ router.post("/util/cooldown", async function (req, res, next) {
       throw error;
     }
 
-    try {
-      hat = parseInt(hat);
-    } catch (e) {
+    hat = _.toNumber(hat);
+    if (_.isNaN(hat) || Math.sign(hat) != 1) {
       const error = new RainbowError({
         httpCode: 400,
         error: ERROR_CODE.INVALID_PARAMETER,
-        reason: `hat must be int.`,
+        reason: `hat must be positive`,
       });
       throw error;
     }
