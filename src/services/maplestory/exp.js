@@ -97,14 +97,44 @@ async function continentQuest(level, continent, subQuestCount = 0) {
   return ((raiseExp * 100) / needExp).toFixed(3);
 }
 
-async function getMonsterPark(level) {
-  let gatherExp = await MonsterParkExp.findOne({ level: level });
+async function getMonsterPark(level, region) {
+  let gatherExp = await MonsterParkExp.findOne({
+    region: region,
+    extreme: false,
+  });
+  gatherExp = utils.toJSON(gatherExp);
+  if (!gatherExp) {
+    throw new RainbowError({
+      httpCode: 204,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild region`,
+    });
+  }
+
+  let requireExp = await LevelExp.findOne({ level: level });
+  requireExp = utils.toJSON(requireExp);
+  if (!requireExp) {
+    throw new RainbowError({
+      httpCode: 204,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  gatherExp = _.get(gatherExp, "exp");
+  let needExp = _.get(requireExp, "needExp");
+
+  return ((gatherExp * 100) / needExp).toFixed(3);
+}
+
+async function getExtremeMonsterPark(level) {
+  let gatherExp = await MonsterParkExp.findOne({ level: level, extreme: true });
   gatherExp = utils.toJSON(gatherExp);
   if (!gatherExp) {
     // causeAnError(404, ERROR_CODE.DATA_NOT_FOUND);
     // throw new Error("invaild level");
     throw new RainbowError({
-      httpCode: 404,
+      httpCode: 204,
       error: ERROR_CODE.DATA_NOT_FOUND,
       reason: `invaild level`,
     });
@@ -114,7 +144,7 @@ async function getMonsterPark(level) {
   requireExp = utils.toJSON(requireExp);
   if (!requireExp) {
     throw new RainbowError({
-      httpCode: 404,
+      httpCode: 204,
       error: ERROR_CODE.DATA_NOT_FOUND,
       reason: `invaild level`,
     });
@@ -443,7 +473,178 @@ async function expOfLevel() {
 }
 
 // pre execute
-async function expOfMonsterPark() {
+async function expOfMonterPark() {
+  let monsterParkExp = [];
+
+  //자동 경비 구역
+  monsterParkExp.push({
+    region: "AutoSecurityArea",
+    exp: 3908220,
+  });
+
+  //이끼나무 숲
+  monsterParkExp.push({
+    region: "MossyTreeForest",
+    exp: 5989675,
+  });
+
+  //하늘 숲 수련장
+  monsterParkExp.push({
+    region: "SkyForestTrainingCenter",
+    exp: 7311630,
+  });
+
+  //해적단의 비밀 기지
+  monsterParkExp.push({
+    region: "SecretPirateHideout",
+    exp: 8129820,
+  });
+
+  //이계의 전장
+  monsterParkExp.push({
+    region: "OtherworldBattleground",
+    exp: 11524015,
+  });
+
+  //외딴 숲 위험 지역
+  monsterParkExp.push({
+    region: "DangerouslyIsolatedForest",
+    exp: 11953470,
+  });
+
+  //금지된 시간
+  monsterParkExp.push({
+    region: "ForbiddenTime",
+    exp: 13378390,
+  });
+
+  //숨겨진 유적
+  monsterParkExp.push({
+    region: "ClandestineRuins",
+    exp: 15311670,
+  });
+
+  //폐허가 된 도시
+  monsterParkExp.push({
+    region: "RuinedCity",
+    exp: 19790735,
+  });
+
+  //죽은 나무의 숲
+  monsterParkExp.push({
+    region: "ForestofDeadTrees",
+    exp: 26950030,
+  });
+
+  //감시의 탑
+  monsterParkExp.push({
+    region: "WatchmanTower",
+    exp: 27953565,
+  });
+
+  //용의 둥지
+  monsterParkExp.push({
+    region: "DragonNest",
+    exp: 33576980,
+  });
+
+  //망각의 신전
+  monsterParkExp.push({
+    region: "TempleofOblivion",
+    exp: 35340485,
+  });
+
+  //기사단의 요새
+  monsterParkExp.push({
+    region: "KnightStronghold",
+    exp: 39775800,
+  });
+
+  //원혼의 협곡
+  monsterParkExp.push({
+    region: "SpiritValley",
+    exp: 40650435,
+  });
+
+  //소멸의 여로
+  monsterParkExp.push({
+    region: "VanishingJourney",
+    exp: 179957540,
+    needArcane: 30,
+  });
+
+  //츄츄 아일랜드
+  monsterParkExp.push({
+    region: "ChuChu",
+    exp: 642539340,
+    needArcane: 100,
+  });
+
+  //꿈의 도시 레헬른
+  monsterParkExp.push({
+    region: "Lachelein",
+    exp: 1608830495,
+    needArcane: 190,
+  });
+
+  //신비의 숲 아르카나
+  monsterParkExp.push({
+    region: "Arcana",
+    exp: 2353786685,
+    needArcane: 280,
+  });
+
+  //기억의 늪 모라스
+  monsterParkExp.push({
+    region: "Morass",
+    exp: 2996755520,
+    needArcane: 400,
+  });
+
+  //태초의 바다 에스페라
+  monsterParkExp.push({
+    region: "Esfera",
+    exp: 3459833685,
+    needArcane: 560,
+  });
+
+  //셀라스, 별이 잠긴 곳
+  monsterParkExp.push({
+    region: "Sellas",
+    exp: 4356407460,
+    needArcane: 600,
+  });
+
+  //문브릿지
+  monsterParkExp.push({
+    region: "Moonbridge",
+    exp: 5858308250,
+    needArcane: 670,
+  });
+
+  //고통의 미궁
+  monsterParkExp.push({
+    region: "Labyrinth",
+    exp: 7029450500,
+    needArcane: 760,
+  });
+
+  //리멘
+  monsterParkExp.push({
+    region: "Limina",
+    exp: 7766278700,
+    needArcane: 850,
+  });
+
+  for (let _monsterPark of monsterParkExp) {
+    await MonsterParkExp.create(_monsterPark);
+  }
+
+  console.dir("monster park data set");
+}
+
+// pre execute
+async function expOfExtremeMonsterPark() {
   let monsterParkExp = {};
 
   let level = 260;
@@ -464,12 +665,15 @@ async function expOfMonsterPark() {
     await MonsterParkExp.create({
       level: _level,
       exp: monsterParkExp[_level],
+      extreme: true,
     });
   }
+  console.dir("extreme monster park data set");
 }
 
 module.exports = {
   regionQuest,
   getMonsterPark,
+  getExtremeMonsterPark,
   continentQuest,
 };
