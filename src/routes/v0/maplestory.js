@@ -46,25 +46,24 @@ router.get("/starforce/:level/:star", async function (req, res, next) {
 });
 
 router.get("/growth/:level", async function (req, res, next) {
-  let resPayload = {
-    isSuccess: false,
-  };
+  try {
+    if (!req.body.type) {
+      throw new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.INVALID_PARAMETER,
+        reason: `invaild parameter`,
+      });
+    }
+    let result = await maplestoryService.exp.getGrowthPer(req.body.type, req.params.level);
+    return res.json(result);
+  } catch (e) {
+    console.dir(e);
 
-  if (!_.get(req.body, "type")) {
-    resPayload.isSuccess = false;
-    resPayload.payload = {
-      message: "type을 확인하세요",
-    };
-    return res.json(resPayload);
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
   }
-
-  let result = maplestoryService1.getGrowthPer(req.body.type, req.params.level);
-
-  resPayload.isSuccess = true;
-  resPayload.payload = {
-    percent: result,
-  };
-  return res.json(resPayload);
 });
 
 router.get("/union/:name", characterLength, async function (req, res, next) {
@@ -96,19 +95,18 @@ router.get("/event", async function (req, res, next) {
 });
 
 router.get("/symbol/:start/:end", async function (req, res, next) {
-  if (
-    _.isNaN(parseInt(req.params.start)) ||
-    _.isNaN(parseInt(req.params.end))
-  ) {
-    const error = new RainbowError({
-      httpCode: 400,
-      error: ERROR_CODE.INVALID_PARAMETER,
-      reason: "invalid parameter",
-    });
-    throw error;
-  }
-
   try {
+    if (
+      _.isNaN(parseInt(req.params.start)) ||
+      _.isNaN(parseInt(req.params.end))
+    ) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.INVALID_PARAMETER,
+        reason: "invalid parameter",
+      });
+      throw error;
+    }
     let calc = await maplestoryService.symbol.getSymbolCalc(
       parseInt(req.params.start),
       parseInt(req.params.end)

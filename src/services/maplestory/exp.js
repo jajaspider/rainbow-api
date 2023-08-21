@@ -156,6 +156,84 @@ async function getExtremeMonsterPark(level) {
   return ((gatherExp * 100) / needExp).toFixed(3);
 }
 
+async function getGrowthPer(type, level) {
+  // 익스트림 성장의 비약 - 199레벨 경험치
+  // 성장의 비약1 - 209레벨 경험치
+  // 성장의 비약2 - 219레벨 경험치
+  // 성장의 비약3 - 229레벨 경험치
+  // 태풍 성장의 비약 - 239레벨 경험치
+  // 극한 성장의 비약 - 249레벨 경험치
+
+  let expValue = 0;
+  let maxLevel = 0;
+  switch (type) {
+    case "leap":
+      if (level >= 141 && level < 200) {
+        throw new RainbowError({
+          httpCode: 400,
+          error: ERROR_CODE.UNMEASURABLE,
+          reason: `unmeasurable data`,
+        });
+      }
+      if (level < 141) {
+        throw new RainbowError({
+          httpCode: 400,
+          error: ERROR_CODE.INVALID_PARAMETER,
+          reason: `invaild level`,
+        });
+      }
+      maxLevel = "199"
+      break;
+    case "elixir1":
+      maxLevel = "209"
+      break;
+    case "elixir2":
+      maxLevel = "219"
+      break;
+    case "elixir3":
+      maxLevel = "229"
+      break;
+    case "typhoon":
+      maxLevel = "239"
+      break;
+    case "extreme":
+      maxLevel = "249"
+      break;
+    default:
+      break;
+  }
+  if (level < 200) {
+    throw new RainbowError({
+      httpCode: 400,
+      error: ERROR_CODE.INVALID_PARAMETER,
+      reason: `invaild level`,
+    });
+  }
+
+  expValue = await LevelExp.findOne({ level: maxLevel });
+  expValue = utils.toJSON(expValue);
+  if (!expValue) {
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  let levelExp = await LevelExp.findOne({ level: level });
+  levelExp = utils.toJSON(levelExp);
+  if (!levelExp) {
+    throw new RainbowError({
+      httpCode: 404,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `invaild level`,
+    });
+  }
+
+  let totalExp = expValue.needExp * 100 / levelExp.needExp;
+  
+  return totalExp.toFixed(3);
+}
 // pre execute
 async function expOfLevel() {
   let expObj = {};
@@ -676,4 +754,5 @@ module.exports = {
   getMonsterPark,
   getExtremeMonsterPark,
   continentQuest,
+  getGrowthPer,
 };
