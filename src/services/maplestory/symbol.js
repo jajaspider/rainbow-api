@@ -18,6 +18,8 @@ const SYMBOL_REGION = {
   ARCUS: "Arcus",
   ODIUM: "Odium",
   SHANGRILA: "ShangriLa",
+  ARTERIA: "Arteria",
+  CARCION: "Carcion",
 };
 
 async function getSymbolCalc(startLevel, endLevel) {
@@ -39,6 +41,8 @@ async function getSymbolCalc(startLevel, endLevel) {
     arcusMeso: 0,
     odiumMeso: 0,
     shangriLaMeso: 0,
+    arteriaMeso: 0,
+    carcionMeso: 0,
   };
 
   if (
@@ -81,8 +85,16 @@ async function getSymbolCalc(startLevel, endLevel) {
       else if (_athentic.subType == SYMBOL_REGION.SHANGRILA) {
         result.shangriLaMeso += _athentic.requireMeso;
       }
+      // 아르테리아
+      else if (_athentic.subType == SYMBOL_REGION.ARTERIA) {
+        result.arteriaMeso += _athentic.requireMeso;
+      }
+      // 카르시온
+      else if (_athentic.subType == SYMBOL_REGION.CARCION) {
+        result.carcionMeso += _athentic.requireMeso;
+      }
     }
-    result.requireAthenticSymbol /= 4;
+    result.requireAthenticSymbol /= 6;
   }
 
   let arcaneResult = await Symbol.find({
@@ -249,6 +261,8 @@ async function countOflevel() {
       arcusMeso: 0,
       odiumMeso: 0,
       shangriLaMeso: 0,
+      arteriaMeso: 0,
+      carcionMeso: 0,
     },
   };
 
@@ -290,6 +304,12 @@ async function countOflevel() {
         100000,
       shangriLaMeso:
         Math.floor(Math.pow(i, 3) * -5.4 + Math.pow(i, 2) * 155.4 + i * 372) *
+        100000,
+      arteriaMeso:
+        Math.floor(Math.pow(i, 3) * -5.4 + Math.pow(i, 2) * 171.6 + i * 408) *
+        100000,
+      carcionMeso:
+        Math.floor(Math.pow(i, 3) * -5.4 + Math.pow(i, 2) * 187.8 + i * 444) *
         100000,
     };
   }
@@ -380,7 +400,25 @@ async function countOflevel() {
       requireSymbol: athentic[_athentic].requireAthenticSymbol,
       requireMeso: athentic[_athentic].shangriLaMeso,
     });
+
+    await Symbol.create({
+      type: "Athentic",
+      subType: "Arteria",
+      level: _athentic,
+      requireSymbol: athentic[_athentic].requireAthenticSymbol,
+      requireMeso: athentic[_athentic].arteriaMeso,
+    });
+
+    await Symbol.create({
+      type: "Athentic",
+      subType: "Carcion",
+      level: _athentic,
+      requireSymbol: athentic[_athentic].requireAthenticSymbol,
+      requireMeso: athentic[_athentic].carcionMeso,
+    });
   }
+
+  console.dir("symbol collection is set");
 }
 
 // countOflevel();
