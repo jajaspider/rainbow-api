@@ -2,7 +2,6 @@ const _ = require("lodash");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-const exp = require("../core/exp");
 const symbol = require("../core/symbol");
 const MapleClass = require("../models").MapleClass;
 const util = require("../utils");
@@ -71,51 +70,6 @@ async function getStarForce(level, star) {
       errorInfo: "잘못입력하셨습니다.",
     }
   );
-}
-
-function getGrowthPer(type, level) {
-  // 익스트림 성장의 비약 - 199레벨 경험치
-  // 성장의 비약1 - 209레벨 경험치
-  // 성장의 비약2 - 219레벨 경험치
-  // 성장의 비약3 - 229레벨 경험치
-  // 태풍 성장의 비약 - 239레벨 경험치
-  // 극한 성장의 비약 - 249레벨 경험치
-
-  let expValue = 0;
-  switch (type) {
-    case "leap":
-      if (level >= 140 && level < 200) {
-        return "측정할 수 없습니다.";
-      }
-      if (level < 140) {
-        return "사용이 불가능합니다.";
-      }
-      expValue = exp.character[199];
-      break;
-    case "elixir1":
-      expValue = exp.character[209];
-      break;
-    case "elixir2":
-      expValue = exp.character[219];
-      break;
-    case "elixir3":
-      expValue = exp.character[229];
-      break;
-    case "typhoon":
-      expValue = exp.character[239];
-      break;
-    case "extreme":
-      expValue = exp.character[249];
-      break;
-    default:
-      break;
-  }
-  if (level < 200) {
-    return "사용이 불가능합니다.";
-  }
-
-  const expPercent = exp.getPercent(parseInt(level), expValue);
-  return parseFloat(expPercent) >= 100 ? "1레벨 상승" : expPercent;
 }
 
 async function getClass(type) {
@@ -244,7 +198,6 @@ function getSymbol(start, end) {
 
 module.exports = {
   getStarForce,
-  getGrowthPer,
   getClass,
   getEventList,
   getSymbol,
