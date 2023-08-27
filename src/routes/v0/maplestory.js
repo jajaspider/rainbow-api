@@ -248,11 +248,76 @@ router.post("/exp/extrememonsterpark", async function (req, res, next) {
       });
       throw error;
     }
-
     let raiseUpExp = await maplestoryService.exp.getExtremeMonsterPark(level);
     return res.json(raiseUpExp);
   } catch (e) {
-    // console.dir(e);
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
+router.post("/util/cooldown", async function (req, res, next) {
+  try {
+    let reqBody = req.body;
+    let cooldown = _.get(reqBody, "cooldown");
+    if (!cooldown) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `cooldown is required`,
+      });
+      throw error;
+    }
+
+    cooldown = _.toNumber(cooldown);
+    if (_.isNaN(cooldown) || Math.sign(cooldown) != 1) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.INVALID_PARAMETER,
+        reason: `cooldown must be positive`,
+      });
+      throw error;
+    }
+
+    let mercedes = _.get(reqBody, "mercedes");
+    if (!mercedes) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `mercedes is required`,
+      });
+      throw error;
+    }
+    mercedes = _.lowerCase(mercedes);
+
+    let hat = _.get(reqBody, "hat");
+    if (!hat) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `hat is required`,
+      });
+      throw error;
+    }
+
+    hat = _.toNumber(hat);
+    if (_.isNaN(hat) || Math.sign(hat) != 1) {
+      const error = new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.INVALID_PARAMETER,
+        reason: `hat must be positive`,
+      });
+      throw error;
+    }
+
+    let result = maplestoryService.util.cooldown(cooldown, mercedes, hat);
+    return res.json(result);
+  } catch (e) {
+    console.dir(e);
 
     if (e instanceof RainbowError) {
       return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
