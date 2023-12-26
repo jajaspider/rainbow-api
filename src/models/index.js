@@ -10,6 +10,9 @@ const levelExpSchema = require("./levelExp");
 const monsterParkExpSchema = require("./monsterParkExp");
 const SymbolSchema = require("./symbol");
 
+const ocidSchema = require("./maplestory/ocid");
+const maplestoryCharacterSchema = require("./maplestory/characterInfo");
+
 // const Selection = mongoose.model('Selection', selectionSchema);
 
 module.exports = {
@@ -22,4 +25,6 @@ module.exports = {
   LevelExp: levelExpSchema,
   MonsterParkExp: monsterParkExpSchema,
   Symbol: SymbolSchema,
+  Ocid: ocidSchema,
+  MaplestoryCharacter: maplestoryCharacterSchema,
 };

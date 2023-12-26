@@ -5,21 +5,6 @@ const maplestoryService1 = require("../../services/maplestory.service.js");
 
 const maplestoryService = require("../../services/maplestory/index");
 const { ERROR_CODE, RainbowError } = require("../../core/constants");
-const { characterLength } = require("../../services/validation.js");
-
-router.get("/info/:name", characterLength, async function (req, res, next) {
-  try {
-    let result = await maplestoryService.info.character(req.params.name);
-    return res.json(result);
-  } catch (e) {
-    console.dir(e);
-
-    if (e instanceof RainbowError) {
-      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
-    }
-    return res.status(500).send(e.message);
-  }
-});
 
 router.get("/starforce/:level/:star", async function (req, res, next) {
   let resPayload = {
@@ -54,21 +39,10 @@ router.get("/growth/:level", async function (req, res, next) {
         reason: `invaild parameter`,
       });
     }
-    let result = await maplestoryService.exp.getGrowthPer(req.body.type, req.params.level);
-    return res.json(result);
-  } catch (e) {
-    console.dir(e);
-
-    if (e instanceof RainbowError) {
-      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
-    }
-    return res.status(500).send(e.message);
-  }
-});
-
-router.get("/union/:name", characterLength, async function (req, res, next) {
-  try {
-    let result = await maplestoryService.info.union(req.params.name);
+    let result = await maplestoryService.exp.getGrowthPer(
+      req.body.type,
+      req.params.level
+    );
     return res.json(result);
   } catch (e) {
     console.dir(e);
@@ -315,6 +289,34 @@ router.post("/util/cooldown", async function (req, res, next) {
     }
 
     let result = maplestoryService.util.cooldown(cooldown, mercedes, hat);
+    return res.json(result);
+  } catch (e) {
+    console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
+router.get("/info/:name", async function (req, res, next) {
+  try {
+    let result = await maplestoryService.info.character(req.params.name);
+    return res.json(result);
+  } catch (e) {
+    // console.dir(e);
+
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
+router.get("/union/:name", async function (req, res, next) {
+  try {
+    let result = await maplestoryService.info.union(req.params.name);
     return res.json(result);
   } catch (e) {
     console.dir(e);

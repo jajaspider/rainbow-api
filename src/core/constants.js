@@ -15,6 +15,11 @@ const ERROR_CODE = {
     code: "A0004",
     message: "unmeasurable data",
   },
+
+  NEXON_API_FAIL: {
+    code: "E0001",
+    message: "nexon api error",
+  },
 };
 
 class RainbowError extends Error {
