@@ -1,12 +1,14 @@
 rainbow:
-  port : 30003
+  port: 30003
 
 mongo:
-  ip : 127.0.0.1
-  port : 27017
-  database : rainbow
+  ip: 127.0.0.1
+  port: 27017
+  database: rainbow
 
 rabbitmq:
   ip: 127.0.0.1
   port: 5672
   exchange: rainbow
+
+nexon_api_key: ""
