@@ -15,6 +15,10 @@ const ERROR_CODE = {
     code: "A0004",
     message: "unmeasurable data",
   },
+  EXIST_DATA: {
+    code: "A0005",
+    message: "already exist",
+  },
 
   NEXON_API_FAIL: {
     code: "E0001",
@@ -32,7 +36,37 @@ class RainbowError extends Error {
   }
 }
 
+const CURRENCY_LIST = [
+  "USD",
+  "JPY",
+  "PLN",
+  "EUR",
+  "GBP",
+  "TRY",
+  "HKD",
+  "SEK",
+  "CHF",
+  "MNT",
+  "BRL",
+  "SGD",
+  "ZAR",
+  "AUD",
+  "THB",
+  "CNY",
+  "PHP",
+  "CAD",
+  "IDR",
+  "KRW",
+  "MYR",
+  "NOK",
+  "AED",
+  "SAR",
+  "VND",
+  "TWD",
+];
+
 module.exports = {
   ERROR_CODE,
   RainbowError,
+  CURRENCY_LIST,
 };

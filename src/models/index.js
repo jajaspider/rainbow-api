@@ -13,6 +13,10 @@ const SymbolSchema = require("./symbol");
 const ocidSchema = require("./maplestory/ocid");
 const maplestoryCharacterSchema = require("./maplestory/characterInfo");
 
+const foreignRateSchema = require("./foreignRate");
+const currencyRangeSchema = require("./currencyRange");
+const currencyCalcSchema = require("./currencyCalc");
+
 // const Selection = mongoose.model('Selection', selectionSchema);
 
 module.exports = {
@@ -27,4 +31,7 @@ module.exports = {
   Symbol: SymbolSchema,
   Ocid: ocidSchema,
   MaplestoryCharacter: maplestoryCharacterSchema,
+  ForeignRate: foreignRateSchema,
+  CurrencyRange: currencyRangeSchema,
+  CurrencyCalc: currencyCalcSchema,
 };
