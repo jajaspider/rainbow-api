@@ -1,25 +1,25 @@
 const mongoose = require("mongoose");
 
-const { CURRENCY_LIST } = require("../core/constants");
+const { CURRENCY_LIST } = require("../../core/constants");
 
 // Define Schemes
-const currencyCalcSchema = new mongoose.Schema(
+const currencyRangeSchema = new mongoose.Schema(
   {
     currency: {
       type: String,
       required: true,
       enum: CURRENCY_LIST,
     },
-    currencyAmount: {
+    from: {
       type: Number,
       required: true,
     },
-    krwAmount: {
+    to: {
       type: Number,
       required: true,
     },
-    date: {
-      type: String,
+    point: {
+      type: Number,
       required: true,
     },
   },
@@ -29,4 +29,4 @@ const currencyCalcSchema = new mongoose.Schema(
 );
 
 // Create Model & Export
-module.exports = mongoose.model("CurrencyCalc", currencyCalcSchema);
+module.exports = mongoose.model("CurrencyRange", currencyRangeSchema);

@@ -3,6 +3,7 @@ const router = express.Router();
 
 const foreignRateRouter = require("./foreignRate");
 const calculatorRouter = require("./calc");
+const moogoldRouter = require("./moogold");
 
 const { CURRENCY_LIST } = require("../../../core/constants");
 
@@ -12,5 +13,6 @@ router.get("/", (req, res, next) => {
 
 router.use("/foreignRate", foreignRateRouter);
 router.use("/calculator", calculatorRouter);
+router.use("/moogold", moogoldRouter);
 
 module.exports = router;
