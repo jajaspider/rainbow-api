@@ -5,6 +5,7 @@ const axios = require("axios");
 
 const DB = require("../../models"),
   ForeignRate = DB.ForeignRate;
+const { calculateKRWRange } = require("../../services/theMore");
 
 // 매일 아침 9시에 실행되는 함수
 const shinhan = async () => {
@@ -50,6 +51,7 @@ const shinhan = async () => {
       rate: usd,
       date: inquiryDate,
     });
+    calculateKRWRange("USD");
     console.dir("신한 data 파싱 완료");
     return usd;
   } catch (e) {
