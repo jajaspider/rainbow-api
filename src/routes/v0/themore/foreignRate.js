@@ -59,7 +59,7 @@ router.post("/", async function (req, res, next) {
           date: inquiryDate,
         });
 
-        calculateKRWRange(fromCurrency);
+        await calculateKRWRange(fromCurrency);
         return res.json(krwRate);
       }
       throw new RainbowError({
@@ -89,7 +89,8 @@ router.post("/", async function (req, res, next) {
       rate: rate,
       date: inquiryDate,
     });
-    calculateKRWRange(fromCurrency);
+    // console.dir(calculateKRWRange);
+    await calculateKRWRange(fromCurrency);
     return res.json(result);
   } catch (e) {
     console.dir(e);
