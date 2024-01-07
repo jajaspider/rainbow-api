@@ -49,7 +49,7 @@ async function exchangeRate() {
       continue;
     }
 
-    let krwAmount = await calculateKRW(
+    let result = await calculateKRW(
       _currency,
       currencies[_currency],
       givenDate.format("YYYYMMDD")
@@ -57,14 +57,14 @@ async function exchangeRate() {
     console.dir({
       currency: _currency,
       currencyAmount: currencies[_currency],
-      krwAmount,
+      krwAmount: result.krwAmount,
       date: givenDate.format("YYYYMMDD"),
     });
 
     await Moogold.create({
       currency: _currency,
       currencyAmount: currencies[_currency],
-      krwAmount,
+      krwAmount: result.krwAmount,
       date: givenDate.format("YYYYMMDD"),
     });
   }

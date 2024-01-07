@@ -40,13 +40,13 @@ async function calculateKRWRange(currency) {
 
     let krwAmount = await calculateKRW(currency, _range, inquiryDate);
 
-    krws.push(krwAmount);
+    krws.push(krwAmount.krwAmount);
     calcList.push({
       currency,
       currencyAmount: currencyAmount,
-      krwAmount: krwAmount,
-      krwFee: Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate),
+      krwAmount: krwAmount.krwAmount,
       date: inquiryDate,
+      origin: krwAmount.origin,
     });
   }
 
@@ -96,7 +96,19 @@ async function calculateKRW(currency, amount, date) {
   let krwAmountAddFee =
     krwAmount + Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate);
 
-  return krwAmountAddFee;
+  return {
+    krwAmount: krwAmountAddFee,
+    origin: {
+      currency: currency,
+      currencyAmount: amount,
+      usdAmount,
+      usdAmountAddVisa,
+      krwAmount,
+      krwFee: Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate),
+      krwAmountAddFee,
+      date,
+    },
+  };
 }
 
 module.exports = { currencyRange, calculateKRWRange, calculateKRW };

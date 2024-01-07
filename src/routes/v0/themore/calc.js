@@ -71,7 +71,7 @@ router.post("/", async function (req, res, next) {
     }
 
     let result = await calculateKRW(currency, amount, inquiryDate);
-    return res.json(result);
+    return res.json(result.krwAmount);
   } catch (e) {
     //
     if (e instanceof RainbowError) {
