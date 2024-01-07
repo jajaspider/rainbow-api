@@ -38,34 +38,13 @@ async function calculateKRWRange(currency) {
       Math.round(_range * Math.pow(10, result.point)) /
       Math.pow(10, result.point);
 
-    let usdAmount = 0;
-    let currencyAmount = _range;
-    //USD가 아닐경우
-    if (currency != "USD") {
-      let foreignRate = await ForeignRate.findOne({
-        from_currency: currency,
-        to_currency: "USD",
-        date: inquiryDate,
-      });
-      foreignRate = utils.toJSON(foreignRate);
-      usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
-    } else {
-      usdAmount = currencyAmount;
-    }
+    let krwAmount = await calculateKRW(currency, _range, inquiryDate);
 
-    let usdAmountAddVisa = Math.floor(usdAmount * 1.011 * 100) / 100;
-    let krwAmount = Math.floor(usdAmountAddVisa * krwRate.rate);
-
-    let krwAmountAddFee =
-      krwAmount + Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate);
-
-    krws.push(krwAmountAddFee);
+    krws.push(krwAmount);
     calcList.push({
       currency,
       currencyAmount: currencyAmount,
-      currencyAmountVisa: usdAmountAddVisa,
-      krwAmount: krwAmountAddFee,
-      beforeKrw: krwAmount,
+      krwAmount: krwAmount,
       krwFee: Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate),
       date: inquiryDate,
     });
@@ -105,6 +84,7 @@ async function calculateKRW(currency, amount, date) {
       date: date,
     });
     foreignRate = utils.toJSON(foreignRate);
+    // 수식 검증 필요
     usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
   } else {
     usdAmount = currencyAmount;

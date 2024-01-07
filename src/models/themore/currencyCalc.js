@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Types = mongoose.Schema.Types;
 
 const { CURRENCY_LIST } = require("../../core/constants");
 
@@ -21,6 +22,9 @@ const currencyCalcSchema = new mongoose.Schema(
     date: {
       type: String,
       required: true,
+    },
+    origin: {
+      type: Types.Mixed,
     },
   },
   {
