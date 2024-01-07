@@ -100,12 +100,18 @@ async function calculateKRW(currency, amount, date) {
       });
     }
     // 수식 검증 필요
-    usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
+    //프로테크로직
+    // usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
+    //가설2. 셋째반올림하기전에 브랜드수수료인 1.1%를 적용한후 셋째반올림을 한다
+    usdAmount = currencyAmount * foreignRate.rate;
   } else {
     usdAmount = currencyAmount;
   }
 
-  let usdAmountAddVisa = Math.floor(usdAmount * 1.011 * 100) / 100;
+  //프로테크로직
+  // let usdAmountAddVisa = Math.floor(usdAmount * 1.011 * 100) / 100;
+  //가설2. 셋째반올림하기전에 브랜드수수료인 1.1%를 적용한후 셋째반올림을 한다
+  let usdAmountAddVisa = Math.round(usdAmount * 1.011 * 100) / 100;
   let krwAmount = Math.floor(usdAmountAddVisa * krwRate.rate);
 
   let krwAmountAddFee =
