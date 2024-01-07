@@ -5,6 +5,7 @@ const DB = require("../../models"),
   CurrencyRange = DB.CurrencyRange,
   ForeignRate = DB.ForeignRate,
   CurrencyCalc = DB.CurrencyCalc;
+const { RainbowError, ERROR_CODE } = require("../../core/constants");
 const utils = require("../../utils");
 const dayjs = require("dayjs");
 
@@ -73,6 +74,13 @@ async function calculateKRW(currency, amount, date) {
     date: date,
   });
   krwRate = utils.toJSON(krwRate);
+  if (_.isEmpty(krwRate)) {
+    throw new RainbowError({
+      httpCode: 400,
+      error: ERROR_CODE.DATA_NOT_FOUND,
+      reason: `not found krw rate`,
+    });
+  }
 
   let usdAmount = 0;
   let currencyAmount = amount;
@@ -84,6 +92,13 @@ async function calculateKRW(currency, amount, date) {
       date: date,
     });
     foreignRate = utils.toJSON(foreignRate);
+    if (_.isEmpty(foreignRate)) {
+      throw new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.DATA_NOT_FOUND,
+        reason: `not found ${currency} rate`,
+      });
+    }
     // 수식 검증 필요
     usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
   } else {
