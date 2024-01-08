@@ -44,7 +44,7 @@ async function calculateKRWRange(currency) {
     krws.push(krwAmount.krwAmount);
     calcList.push({
       currency,
-      currencyAmount: currencyAmount,
+      currencyAmount: _range,
       krwAmount: krwAmount.krwAmount,
       date: inquiryDate,
       origin: krwAmount.origin,
@@ -84,7 +84,7 @@ async function calculateKRW(currency, amount, date) {
 
   let usdAmount = 0;
   let currencyAmount = amount;
-  //USD가 아닐경우
+
   if (currency != "USD") {
     let foreignRate = await ForeignRate.findOne({
       from_currency: currency,
@@ -92,26 +92,13 @@ async function calculateKRW(currency, amount, date) {
       date: date,
     });
     foreignRate = utils.toJSON(foreignRate);
-    if (_.isEmpty(foreignRate)) {
-      throw new RainbowError({
-        httpCode: 400,
-        error: ERROR_CODE.DATA_NOT_FOUND,
-        reason: `not found ${currency} rate`,
-      });
-    }
     // 수식 검증 필요
-    //프로테크로직
-    // usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
-    //가설2. 셋째반올림하기전에 브랜드수수료인 1.1%를 적용한후 셋째반올림을 한다
-    usdAmount = currencyAmount * foreignRate.rate;
+    usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
   } else {
     usdAmount = currencyAmount;
   }
 
-  //프로테크로직
-  // let usdAmountAddVisa = Math.floor(usdAmount * 1.011 * 100) / 100;
-  //가설2. 셋째반올림하기전에 브랜드수수료인 1.1%를 적용한후 셋째반올림을 한다
-  let usdAmountAddVisa = Math.round(usdAmount * 1.011 * 100) / 100;
+  let usdAmountAddVisa = Math.floor(usdAmount * 1.011 * 100) / 100;
   let krwAmount = Math.floor(usdAmountAddVisa * krwRate.rate);
 
   let krwAmountAddFee =
