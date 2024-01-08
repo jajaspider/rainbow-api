@@ -93,7 +93,18 @@ async function calculateKRW(currency, amount, date) {
     });
     foreignRate = utils.toJSON(foreignRate);
     // 수식 검증 필요
-    usdAmount = Math.round(currencyAmount * foreignRate.rate * 100) / 100;
+    usdAmount = currencyAmount * foreignRate.rate;
+
+    let result = usdAmount.toFixed(6); // 소수점 6자리까지 반올림
+    let resultString = result.toString();
+    let down = resultString.split(".")[1];
+    let testNum = down.slice(3, 6);
+    if (Number(testNum) >= 800) {
+      usdAmount = Math.ceil(usdAmount * 1000) / 1000;
+    } else {
+      usdAmount = Math.floor(usdAmount * 1000) / 1000;
+    }
+    usdAmount = usdAmount.toFixed(2);
   } else {
     usdAmount = currencyAmount;
   }
