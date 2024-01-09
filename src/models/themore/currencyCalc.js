@@ -20,6 +20,10 @@ const currencyCalcSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    efficiency: {
+      type: Number,
+      required: true,
+    },
     date: {
       type: String,
       required: true,

@@ -15,8 +15,13 @@ router.get("/", async function (req, res, next) {
     dayjs.locale("ko");
 
     // 주어진 날짜
-    let givenDate = dayjs();
-    let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
+    let inquiryDate = _.get(req.query, "date");
+    if (!inquiryDate) {
+      inquiryDate = dayjs().format("YYYYMMDD");
+      if (dayjs().hour() < 9) {
+        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      }
+    }
     let currency = _.get(req.query, "currency");
     if (!currency) {
       throw new RainbowError({
@@ -41,9 +46,13 @@ router.get("/allCurrency", async function (req, res, next) {
   try {
     dayjs.locale("ko");
 
-    // 주어진 날짜
-    let givenDate = dayjs();
-    let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
+    let inquiryDate = _.get(req.query, "date");
+    if (!inquiryDate) {
+      inquiryDate = dayjs().format("YYYYMMDD");
+      if (dayjs().hour() < 9) {
+        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      }
+    }
 
     let result = await CurrencyCalc.find({
       date: inquiryDate,
@@ -63,9 +72,13 @@ router.post("/", async function (req, res, next) {
   try {
     dayjs.locale("ko");
 
-    // 주어진 날짜
-    let givenDate = dayjs();
-    let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
+    let inquiryDate = _.get(req.query, "date");
+    if (!inquiryDate) {
+      inquiryDate = dayjs().format("YYYYMMDD");
+      if (dayjs().hour() < 9) {
+        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      }
+    }
     let currency = _.get(req.query, "currency");
     if (!currency) {
       throw new RainbowError({

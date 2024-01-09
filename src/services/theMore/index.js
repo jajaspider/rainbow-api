@@ -47,6 +47,7 @@ async function calculateKRWRange(currency) {
       currencyAmount: _range,
       krwAmount: krwAmount.krwAmount,
       krwAmountDisplay: String(krwAmount.krwAmount),
+      efficiency: krwAmount.efficiency,
       date: inquiryDate,
       origin: krwAmount.origin,
     });
@@ -116,8 +117,13 @@ async function calculateKRW(currency, amount, date) {
   let krwAmountAddFee =
     krwAmount + Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate);
 
+  let efficiency = (((krwAmountAddFee % 1000) * 2) / krwAmountAddFee).toFixed(
+    2
+  );
+
   return {
     krwAmount: krwAmountAddFee,
+    efficiency,
     origin: {
       currency: currency,
       currencyAmount: amount,
