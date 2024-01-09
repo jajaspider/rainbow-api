@@ -117,9 +117,10 @@ async function calculateKRW(currency, amount, date) {
   let krwAmountAddFee =
     krwAmount + Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate);
 
-  let efficiency = (((krwAmountAddFee % 1000) * 2) / krwAmountAddFee).toFixed(
-    2
-  );
+  let efficiency = (
+    (((krwAmountAddFee % 1000) * 2) / krwAmountAddFee) *
+    100
+  ).toFixed(2);
 
   return {
     krwAmount: krwAmountAddFee,

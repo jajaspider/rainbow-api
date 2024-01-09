@@ -22,6 +22,7 @@ router.get("/", async function (req, res, next) {
         inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
       }
     }
+
     let currency = _.get(req.query, "currency");
     if (!currency) {
       throw new RainbowError({
