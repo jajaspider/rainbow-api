@@ -1,14 +1,11 @@
 const mongoose = require("mongoose");
 
-const { CURRENCY_LIST } = require("../../core/constants");
-
 // Define Schemes
 const moogoldSchema = new mongoose.Schema(
   {
     currency: {
       type: String,
       required: true,
-      enum: CURRENCY_LIST,
     },
     currencyAmount: {
       type: Number,
