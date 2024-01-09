@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-
-const { CURRENCY_LIST } = require("../../core/constants");
+const Types = mongoose.Schema.Types;
 
 // Define Schemes
 const foreignRateSchema = new mongoose.Schema(
@@ -8,12 +7,10 @@ const foreignRateSchema = new mongoose.Schema(
     from_currency: {
       type: String,
       required: true,
-      enum: CURRENCY_LIST,
     },
     to_currency: {
       type: String,
       required: true,
-      enum: CURRENCY_LIST,
     },
     rate: {
       type: Number,

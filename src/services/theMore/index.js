@@ -46,6 +46,7 @@ async function calculateKRWRange(currency) {
       currency,
       currencyAmount: _range,
       krwAmount: krwAmount.krwAmount,
+      krwAmountDisplay: String(krwAmount.krwAmount),
       date: inquiryDate,
       origin: krwAmount.origin,
     });

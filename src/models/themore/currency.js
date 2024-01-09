@@ -1,22 +1,19 @@
 const mongoose = require("mongoose");
 
 // Define Schemes
-const currencyRangeSchema = new mongoose.Schema(
+const currencySchema = new mongoose.Schema(
   {
     currency: {
       type: String,
       required: true,
+      unique: true,
     },
-    from: {
-      type: Number,
+    currencyDisplay: {
+      type: String,
       required: true,
     },
-    to: {
-      type: Number,
-      required: true,
-    },
-    point: {
-      type: Number,
+    active: {
+      type: Boolean,
       required: true,
     },
   },
@@ -26,4 +23,4 @@ const currencyRangeSchema = new mongoose.Schema(
 );
 
 // Create Model & Export
-module.exports = mongoose.model("CurrencyRange", currencyRangeSchema);
+module.exports = mongoose.model("Currency", currencySchema);

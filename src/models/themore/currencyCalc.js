@@ -1,15 +1,12 @@
 const mongoose = require("mongoose");
 const Types = mongoose.Schema.Types;
 
-const { CURRENCY_LIST } = require("../../core/constants");
-
 // Define Schemes
 const currencyCalcSchema = new mongoose.Schema(
   {
     currency: {
       type: String,
       required: true,
-      enum: CURRENCY_LIST,
     },
     currencyAmount: {
       type: Number,
@@ -17,6 +14,10 @@ const currencyCalcSchema = new mongoose.Schema(
     },
     krwAmount: {
       type: Number,
+      required: true,
+    },
+    krwAmountDisplay: {
+      type: String,
       required: true,
     },
     date: {

@@ -4,13 +4,11 @@ const _ = require("lodash");
 const dayjs = require("dayjs");
 
 const DB = require("../../../models"),
-  CurrencyCalcalc = DB.CurrencyCalc;
-const {
-  RainbowError,
-  ERROR_CODE,
-  CURRENCY_LIST,
-} = require("../../../core/constants");
+  CurrencyCalc = DB.CurrencyCalc,
+  Currency = DB.Currency;
+const { RainbowError, ERROR_CODE } = require("../../../core/constants");
 const { calculateKRW } = require("../../../services/theMore");
+const utils = require("../../../utils");
 
 router.get("/", async function (req, res, next) {
   try {
@@ -28,7 +26,29 @@ router.get("/", async function (req, res, next) {
       });
     }
 
-    let result = await CurrencyCalcalc.find({ currency, date: inquiryDate });
+    let result = await CurrencyCalc.find({ currency, date: inquiryDate });
+    return res.json(result);
+  } catch (e) {
+    //
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
+router.get("/allCurrency", async function (req, res, next) {
+  try {
+    dayjs.locale("ko");
+
+    // 주어진 날짜
+    let givenDate = dayjs();
+    let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
+
+    let result = await CurrencyCalc.find({
+      date: inquiryDate,
+      krwAmountDisplay: { $regex: /^5\d{3}$/ },
+    });
     return res.json(result);
   } catch (e) {
     //
@@ -53,7 +73,11 @@ router.post("/", async function (req, res, next) {
         error: ERROR_CODE.MISSING_PARAMETER,
         reason: `require currency parameter`,
       });
-    } else if (!_.includes(CURRENCY_LIST, currency)) {
+    }
+
+    let currencies = await Currency.find({ currency, active: true });
+    utils.toJSON(currencies);
+    if (_.isEmpty(currencies)) {
       throw new RainbowError({
         httpCode: 400,
         error: ERROR_CODE.DATA_NOT_FOUND,
