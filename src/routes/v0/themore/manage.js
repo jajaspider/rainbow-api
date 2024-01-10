@@ -20,7 +20,7 @@ router.post("/reGenerating", async function (req, res, next) {
     let currency = await Currency.find({ active: true });
     currency = utils.toJSON(currency);
     _.map(currency, (_data) => {
-      calculateKRWRange(_data.currency);
+      calculateKRWRange(_data.currency, inquiryDate);
     });
 
     return res.json({});
@@ -61,7 +61,7 @@ router.post("/currency", async function (req, res, next) {
     if (active) {
       await CurrencyCalc.deleteMany({ date: inquiryDate, currency: currency });
 
-      calculateKRWRange(currency);
+      calculateKRWRange(currency, inquiryDate);
     }
 
     await Currency.updateOne({ currency }, { active });

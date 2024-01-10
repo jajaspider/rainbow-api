@@ -15,19 +15,17 @@ function* currencyRange(start, end, point) {
   }
 }
 
-async function calculateKRWRange(currency) {
+async function calculateKRWRange(currency, date) {
   let result = await CurrencyRange.findOne({ currency });
   result = utils.toJSON(result);
   if (_.isEmpty(result)) {
     return [];
   }
 
-  let givenDate = dayjs();
-  let inquiryDate = givenDate.format("YYYYMMDD");
   let krwRate = await ForeignRate.findOne({
     from_currency: "USD",
     to_currency: "KRW",
-    date: inquiryDate,
+    date: date,
   });
   krwRate = utils.toJSON(krwRate);
 
@@ -39,7 +37,7 @@ async function calculateKRWRange(currency) {
       Math.round(_range * Math.pow(10, result.point)) /
       Math.pow(10, result.point);
 
-    let krwAmount = await calculateKRW(currency, _range, inquiryDate);
+    let krwAmount = await calculateKRW(currency, _range, date);
 
     krws.push(krwAmount.krwAmount);
     calcList.push({
@@ -48,7 +46,7 @@ async function calculateKRWRange(currency) {
       krwAmount: krwAmount.krwAmount,
       krwAmountDisplay: String(krwAmount.krwAmount),
       efficiency: krwAmount.efficiency,
-      date: inquiryDate,
+      date: date,
       origin: krwAmount.origin,
     });
   }
