@@ -51,7 +51,7 @@ const shinhan = async () => {
       rate: usd,
       date: inquiryDate,
     });
-    calculateKRWRange("USD");
+    await calculateKRWRange("USD", inquiryDate);
     console.dir("신한 data 파싱 완료");
     return usd;
   } catch (e) {
