@@ -49,24 +49,28 @@ async function exchangeRate() {
       continue;
     }
 
-    let result = await calculateKRW(
-      _currency,
-      currencies[_currency],
-      givenDate.format("YYYYMMDD")
-    );
-    console.dir({
-      currency: _currency,
-      currencyAmount: currencies[_currency],
-      krwAmount: result.krwAmount,
-      date: givenDate.format("YYYYMMDD"),
-    });
+    try {
+      let result = await calculateKRW(
+        _currency,
+        currencies[_currency],
+        givenDate.format("YYYYMMDD")
+      );
+      console.dir({
+        currency: _currency,
+        currencyAmount: currencies[_currency],
+        krwAmount: result.krwAmount,
+        date: givenDate.format("YYYYMMDD"),
+      });
 
-    await Moogold.create({
-      currency: _currency,
-      currencyAmount: currencies[_currency],
-      krwAmount: result.krwAmount,
-      date: givenDate.format("YYYYMMDD"),
-    });
+      await Moogold.create({
+        currency: _currency,
+        currencyAmount: currencies[_currency],
+        krwAmount: result.krwAmount,
+        date: givenDate.format("YYYYMMDD"),
+      });
+    } catch (e) {
+      // 만약 문제있는 통화는 제외하도록 함
+    }
   }
 }
 
