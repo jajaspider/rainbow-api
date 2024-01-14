@@ -107,8 +107,13 @@ router.get("/", async function (req, res, next) {
     dayjs.locale("ko");
 
     // 주어진 날짜
-    let givenDate = dayjs();
-    let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
+    let inquiryDate = _.get(req.query, "date");
+    if (!inquiryDate) {
+      inquiryDate = dayjs().format("YYYYMMDD");
+      if (dayjs().hour() < 9) {
+        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      }
+    }
 
     let foreignRates = await ForeignRate.find({
       date: inquiryDate,
