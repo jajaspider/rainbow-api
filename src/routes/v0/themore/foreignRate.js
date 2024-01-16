@@ -42,6 +42,14 @@ router.post("/", async function (req, res, next) {
         reason: `require rate`,
       });
     }
+    let noticeTime = _.get(reqBody, "notice_time");
+    if (!noticeTime) {
+      throw new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `require notice_time`,
+      });
+    }
     let inquiryDate = _.get(reqBody, "date", givenDate.format("YYYYMMDD"));
 
     let krwRate = await ForeignRate.findOne({
@@ -57,6 +65,7 @@ router.post("/", async function (req, res, next) {
           to_currency: toCurrency,
           rate: rate,
           date: inquiryDate,
+          notice_time: noticeTime,
         });
 
         await calculateKRWRange(fromCurrency, inquiryDate);
@@ -88,6 +97,7 @@ router.post("/", async function (req, res, next) {
       to_currency: toCurrency,
       rate: rate,
       date: inquiryDate,
+      notice_time: noticeTime,
     });
     // console.dir(calculateKRWRange);
     calculateKRWRange(fromCurrency, inquiryDate);
