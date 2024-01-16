@@ -50,7 +50,7 @@ const shinhan = async () => {
       to_currency: "KRW",
       rate: usd,
       date: inquiryDate,
-      noticeTime: displayDate,
+      notice_time: displayDate,
     });
     await calculateKRWRange("USD", inquiryDate);
     console.dir("신한 data 파싱 완료");
