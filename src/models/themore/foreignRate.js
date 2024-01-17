@@ -16,7 +16,7 @@ const foreignRateSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    noticeTime: {
+    notice_time: {
       type: String,
       required: true,
     },

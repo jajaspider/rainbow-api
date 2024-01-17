@@ -61,6 +61,8 @@ const shinhan = async () => {
   }
 };
 
+// shinhan();
+
 // 규칙 설정: 매일 아침 8시40분에 실행
 const rule = new schedule.RecurrenceRule();
 rule.tz = "Asia/Seoul"; // 한국 시간대
