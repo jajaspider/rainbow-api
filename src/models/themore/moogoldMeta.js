@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Define Schemes
-const moogoldSchema = new mongoose.Schema(
+const moogoldMetaSchema = new mongoose.Schema(
   {
     currency: {
       type: String,
@@ -11,26 +11,16 @@ const moogoldSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    origin_amount: {
+    percent_fee: {
       type: Number,
       required: true,
     },
-    currency_amount: {
+    static_fee: {
       type: Number,
       required: true,
     },
-    krw_amount: {
+    point: {
       type: Number,
-      required: true,
-    },
-    product_url: {
-      type: String,
-    },
-    product_name: {
-      type: String,
-    },
-    date: {
-      type: String,
       required: true,
     },
   },
@@ -39,4 +29,4 @@ const moogoldSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Moogold", moogoldSchema);
+module.exports = mongoose.model("MoogoldMeta", moogoldMetaSchema);
