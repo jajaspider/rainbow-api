@@ -2,12 +2,14 @@ require("./shinhan");
 
 const maplestory = require("./maplestory");
 const lostark = require("./lostark");
+const happymbook = require("./happymbook");
 
 class Crawling {
   constructor() {}
   async init() {
     await maplestory.init();
     await lostark.init();
+    await happymbook.init();
 
     this.maplestoryNotice = setInterval(async () => {
       await maplestory.crawlingNotice();
@@ -18,6 +20,10 @@ class Crawling {
 
     this.lostarkNotice = setInterval(async () => {
       await lostark.crawlingNotice();
+    }, 5000);
+
+    this.happymbookNotice = setInterval(async () => {
+      await happymbook.crawling();
     }, 5000);
   }
 }
