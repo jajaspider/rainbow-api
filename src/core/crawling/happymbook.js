@@ -8,9 +8,9 @@ class Happymbook {
 
   async init() {
     this.targetUrl =
-      "https://happymbook.com/products/how-to-sell-online-with-a-faceless-account-ebook-with-master-resell-rights-mrr-and-private-label-rights-plr-a-done-for-you-guide";
+      "https://happymbook.com/products/korea-birthday-gift-item-happy-tshirts";
 
-    this.publishTime = new Date().getTime() / 1000;
+    this.publishTime = new Date().getTime() / 1000 - 1000 * 60 * 5;
   }
 
   async crawling() {
@@ -37,6 +37,7 @@ class Happymbook {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          this.publishTime = new Date().getTime();
         }
       }
     } catch (e) {
