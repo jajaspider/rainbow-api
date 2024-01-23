@@ -23,7 +23,10 @@ class Happymbook {
       stock = stock.trim();
 
       if (stock == "Add to cart") {
-        if (new Date().getTime() / 1000 - this.publishTime >= 1000 * 60 * 5) {
+        if (
+          Math.floor(new Date().getTime() / 1000) - this.publishTime >=
+          1000 * 60 * 5
+        ) {
           let publishObj = {
             url: this.targetUrl,
             title: "[햄앤북 재고알림]",
@@ -37,7 +40,7 @@ class Happymbook {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
-          this.publishTime = new Date().getTime();
+          this.publishTime = Math.floor(new Date().getTime() / 1000);
         }
       }
     } catch (e) {
