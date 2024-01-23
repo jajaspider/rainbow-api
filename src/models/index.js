@@ -13,6 +13,13 @@ const SymbolSchema = require("./symbol");
 const ocidSchema = require("./maplestory/ocid");
 const maplestoryCharacterSchema = require("./maplestory/characterInfo");
 
+const foreignRateSchema = require("./themore/foreignRate");
+const currencyRangeSchema = require("./themore/currencyRange");
+const currencyCalcSchema = require("./themore/currencyCalc");
+const moogoldSchema = require("./themore/moogold");
+const moogoldMetaSchema = require("./themore/moogoldMeta");
+const currencySchema = require("./themore/currency");
+
 // const Selection = mongoose.model('Selection', selectionSchema);
 
 module.exports = {
@@ -27,4 +34,10 @@ module.exports = {
   Symbol: SymbolSchema,
   Ocid: ocidSchema,
   MaplestoryCharacter: maplestoryCharacterSchema,
+  ForeignRate: foreignRateSchema,
+  CurrencyRange: currencyRangeSchema,
+  CurrencyCalc: currencyCalcSchema,
+  Moogold: moogoldSchema,
+  MoogoldMeta: moogoldMetaSchema,
+  Currency: currencySchema,
 };

@@ -118,7 +118,7 @@ async function getCharacterInfo(ocid) {
       return characterInfo;
     }
 
-    return maplestoryCharacter;
+    return maplestoryCharacter[0];
   } catch (e) {
     console.dir(e);
     // axios 에러이지만 200이 아닌경우
@@ -158,7 +158,6 @@ async function getUnionInfo(ocid) {
 
     let unionInfoUrl = `${mapleStoryApi}/v1/ranking/union`;
     result = await axios.get(unionInfoUrl, { headers, params });
-    console.dir(_.get(result, "data"));
 
     let ranking = _.get(result, "data.ranking");
 

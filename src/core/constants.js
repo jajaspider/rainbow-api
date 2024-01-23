@@ -15,6 +15,10 @@ const ERROR_CODE = {
     code: "A0004",
     message: "unmeasurable data",
   },
+  EXIST_DATA: {
+    code: "A0005",
+    message: "already exist",
+  },
 
   NEXON_API_FAIL: {
     code: "E0001",
