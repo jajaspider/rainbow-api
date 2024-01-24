@@ -3,12 +3,12 @@ const cheerio = require("cheerio");
 const _ = require("lodash");
 const rabbitmq = require("../rabbitmq");
 
-class Happymbook {
+class Coza {
   constructor() {}
 
   async init() {
     this.targetUrl =
-      "https://happymbook.com/products/korea-birthday-gift-item-happy-tshirts";
+      "https://www.daisyshop.co.za/products/south-korea-tour-consulting-pin";
 
     this.publishTime = new Date().getTime() - 1000 * 60 * 5;
   }
@@ -26,7 +26,7 @@ class Happymbook {
         if (new Date().getTime() - this.publishTime >= 1000 * 60 * 5) {
           let publishObj = {
             url: this.targetUrl,
-            title: "[햄앤북 재고알림]",
+            title: "[coza 재고알림]",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -46,6 +46,6 @@ class Happymbook {
   }
 }
 
-const happymbook = new Happymbook();
+const coza = new Coza();
 
-module.exports = happymbook;
+module.exports = coza;
