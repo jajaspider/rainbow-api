@@ -28,15 +28,15 @@ class Crawling {
 
     this.happymbookNotice = setInterval(async () => {
       await happymbook.crawling();
-    }, 5000);
+    }, 10000);
 
     this.cozaNotice = setInterval(async () => {
       await coza.crawling();
-    }, 5000);
+    }, 10000);
 
     this.maraboxNotice = setInterval(async () => {
       await marabox.crawling();
-    }, 10000);
+    }, 15000);
   }
 }
 
