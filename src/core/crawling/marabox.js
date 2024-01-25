@@ -49,8 +49,8 @@ class Marabox {
       if (stock == "Add to cart") {
         if (new Date().getTime() - this.publishTime >= 1000 * 60 * 5) {
           let publishObj = {
-            url: this.targetUrl,
-            title: "[마라탕 재고알림]",
+            url: `${this.prefix}/products/manila-history-bookn`,
+            title: "[마라탕 재고알림]\n비번 : maravip",
             type: "themoreNotice",
           };
           console.dir(publishObj);
