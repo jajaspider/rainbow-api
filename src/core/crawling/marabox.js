@@ -11,7 +11,9 @@ class Marabox {
   async init() {
     this.prefix = "https://marahuyobox.com";
 
-    this.publishTime = new Date().getTime() - 1000 * 60 * 5;
+    this.publishTime = new Date().getTime() - 1000 * 60 * 3;
+    this.publish = false;
+    this.publishCount = 0;
   }
 
   async crawling() {
@@ -46,14 +48,16 @@ class Marabox {
       stock = stock.text();
       stock = stock.replace(/\n/g, "");
       stock = stock.trim();
-      if (stock == "Add to cart") {
-        if (new Date().getTime() - this.publishTime >= 1000 * 60 * 5) {
+
+      // 공지를 보내는중이 아니고
+      if (this.publish == false) {
+        // 재고가 들어왔다면
+        if (stock == "Add to cart") {
           let publishObj = {
             url: `${this.prefix}/products/manila-history-bookn`,
             title: "[마라탕 재고알림]\n비번 : maravip",
             type: "themoreNotice",
           };
-          console.dir(publishObj);
           await rabbitmq.assertQueue("notice.themore");
           await rabbitmq.bindQueue(
             "notice.themore",
@@ -62,6 +66,54 @@ class Marabox {
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
           this.publishTime = new Date().getTime();
+          this.publishCount += 1;
+          this.publish = true;
+        }
+      }
+      // 공지를 보내는중이였고
+      else {
+        // 재고가 들어왔고, 전송횟수가 3회 미만이며, 전송시간이 3분 지난경우
+        if (
+          stock == "Add to cart" &&
+          this.publishCount < 3 &&
+          new Date().getTime() - this.publishTime >= 1000 * 60 * 3
+        ) {
+          let publishObj = {
+            url: `${this.prefix}/products/manila-history-bookn`,
+            title: "[마라탕 재고알림]\n비번 : maravip",
+            type: "themoreNotice",
+          };
+          // db에 공지데이터 넣기
+          await NoticeDB.create(publishObj);
+          await rabbitmq.assertQueue("notice.themore");
+          await rabbitmq.bindQueue(
+            "notice.themore",
+            rabbitmq.mqConfig.exchange,
+            "notice"
+          );
+          await rabbitmq.sendToQueue("notice.themore", publishObj);
+          this.publishTime = new Date().getTime();
+          this.publishCount += 1;
+        }
+        //공지를 보내던 중 품절이 발생
+        else if (stock == "Sold out") {
+          let publishObj = {
+            url: `품절`,
+            title: "[마라탕 재고알림]",
+            type: "themoreNotice",
+          };
+          // db에 공지데이터 넣기
+          await NoticeDB.create(publishObj);
+          await rabbitmq.assertQueue("notice.themore");
+          await rabbitmq.bindQueue(
+            "notice.themore",
+            rabbitmq.mqConfig.exchange,
+            "notice"
+          );
+          await rabbitmq.sendToQueue("notice.themore", publishObj);
+          this.publishTime = new Date().getTime();
+          this.publishCount = 0;
+          this.publish = false;
         }
       }
     } catch (e) {
