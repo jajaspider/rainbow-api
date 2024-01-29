@@ -8,10 +8,10 @@ class Coza {
   constructor() {}
 
   async init() {
-    // this.targetUrl =
-    //   "https://www.daisyshop.co.za/products/south-korea-tour-consulting-pin";
     this.targetUrl =
-      "https://www.daisyshop.co.za/products/apple-bubble-tea-6-pack";
+      "https://www.daisyshop.co.za/products/south-korea-tour-consulting-pin";
+    // this.targetUrl =
+    //   "https://www.daisyshop.co.za/products/apple-bubble-tea-6-pack";
 
     this.publishTime = new Date().getTime() - 1000 * 60 * 3;
     this.publish = false;
