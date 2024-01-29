@@ -36,7 +36,7 @@ class Crawling {
 
     this.maraboxNotice = setInterval(async () => {
       await marabox.crawling();
-    }, 15000);
+    }, 20000);
   }
 }
 
