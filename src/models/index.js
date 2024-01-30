@@ -19,6 +19,8 @@ const currencyCalcSchema = require("./themore/currencyCalc");
 const moogoldSchema = require("./themore/moogold");
 const moogoldMetaSchema = require("./themore/moogoldMeta");
 const currencySchema = require("./themore/currency");
+const offgamerSchema = require("./themore/offgamer");
+const offgamerMetaSchema = require("./themore/offgamerMeta");
 
 // const Selection = mongoose.model('Selection', selectionSchema);
 
@@ -40,4 +42,6 @@ module.exports = {
   Moogold: moogoldSchema,
   MoogoldMeta: moogoldMetaSchema,
   Currency: currencySchema,
+  Offgamer: offgamerSchema,
+  OffgamerMeta: offgamerMetaSchema,
 };
