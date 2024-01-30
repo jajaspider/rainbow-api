@@ -72,4 +72,14 @@ router.post("/", async function (req, res, next) {
   }
 });
 
+router.delete("/", async function (req, res, next) {
+  // 주어진 날짜
+  let inquiryDate = _.get(req.query, "date");
+  if (!inquiryDate) {
+    inquiryDate = dayjs().format("YYYYMMDD");
+  }
+  await Offgamer.deleteMany({ date: inquiryDate });
+  return res.json({});
+});
+
 module.exports = router;
