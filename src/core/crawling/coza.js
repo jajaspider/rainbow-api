@@ -38,14 +38,14 @@ class Coza {
           };
           console.dir(publishObj);
           // db에 공지데이터 넣기
-          // await NoticeDB.create(publishObj);
-          // await rabbitmq.assertQueue("notice.themore");
-          // await rabbitmq.bindQueue(
-          //   "notice.themore",
-          //   rabbitmq.mqConfig.exchange,
-          //   "notice"
-          // );
-          // await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await NoticeDB.create(publishObj);
+          await rabbitmq.assertQueue("notice.themore");
+          await rabbitmq.bindQueue(
+            "notice.themore",
+            rabbitmq.mqConfig.exchange,
+            "notice"
+          );
+          await rabbitmq.sendToQueue("notice.themore", publishObj);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
           this.publish = true;
@@ -66,14 +66,14 @@ class Coza {
           };
           console.dir(publishObj);
           // db에 공지데이터 넣기
-          // await NoticeDB.create(publishObj);
-          // await rabbitmq.assertQueue("notice.themore");
-          // await rabbitmq.bindQueue(
-          //   "notice.themore",
-          //   rabbitmq.mqConfig.exchange,
-          //   "notice"
-          // );
-          // await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await NoticeDB.create(publishObj);
+          await rabbitmq.assertQueue("notice.themore");
+          await rabbitmq.bindQueue(
+            "notice.themore",
+            rabbitmq.mqConfig.exchange,
+            "notice"
+          );
+          await rabbitmq.sendToQueue("notice.themore", publishObj);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
         }
@@ -86,17 +86,22 @@ class Coza {
           };
           console.dir(publishObj);
           // db에 공지데이터 넣기
-          // await NoticeDB.create(publishObj);
-          // await rabbitmq.assertQueue("notice.themore");
-          // await rabbitmq.bindQueue(
-          //   "notice.themore",
-          //   rabbitmq.mqConfig.exchange,
-          //   "notice"
-          // );
-          // await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await NoticeDB.create(publishObj);
+          await rabbitmq.assertQueue("notice.themore");
+          await rabbitmq.bindQueue(
+            "notice.themore",
+            rabbitmq.mqConfig.exchange,
+            "notice"
+          );
+          await rabbitmq.sendToQueue("notice.themore", publishObj);
           this.publishTime = new Date().getTime();
           this.publishCount = 0;
           this.publish = false;
+        } else {
+          console.dir({
+            func: "debug",
+            stock,
+          });
         }
       }
     } catch (e) {

@@ -2,7 +2,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
 const FormData = require("form-data");
-
+const NoticeDB = require("../../models").Notice;
 const rabbitmq = require("../rabbitmq");
 
 class Marabox {
@@ -58,6 +58,9 @@ class Marabox {
             title: "[마라탕 재고알림]\n비번 : maravip",
             type: "themoreNotice",
           };
+          console.dir(publishObj);
+          // db에 공지데이터 넣기
+          await NoticeDB.create(publishObj);
           await rabbitmq.assertQueue("notice.themore");
           await rabbitmq.bindQueue(
             "notice.themore",
@@ -83,6 +86,7 @@ class Marabox {
             title: "[마라탕 재고알림]\n비번 : maravip",
             type: "themoreNotice",
           };
+          console.dir(publishObj);
           // db에 공지데이터 넣기
           await NoticeDB.create(publishObj);
           await rabbitmq.assertQueue("notice.themore");
@@ -102,6 +106,7 @@ class Marabox {
             title: "[마라탕 재고알림]",
             type: "themoreNotice",
           };
+          console.dir(publishObj);
           // db에 공지데이터 넣기
           await NoticeDB.create(publishObj);
           await rabbitmq.assertQueue("notice.themore");

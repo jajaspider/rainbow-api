@@ -62,6 +62,7 @@ class Happymbook {
             title: "[햄앤북 재고알림]",
             type: "themoreNotice",
           };
+          console.dir(publishObj);
           // db에 공지데이터 넣기
           await NoticeDB.create(publishObj);
           await rabbitmq.assertQueue("notice.themore");
@@ -81,6 +82,7 @@ class Happymbook {
             title: "[햄앤북 재고알림]",
             type: "themoreNotice",
           };
+          console.dir(publishObj);
           // db에 공지데이터 넣기
           await NoticeDB.create(publishObj);
           await rabbitmq.assertQueue("notice.themore");
