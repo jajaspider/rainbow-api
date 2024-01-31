@@ -26,6 +26,7 @@ class Coza {
       stock = stock.text();
       stock = stock.replace(/\n/g, "");
       stock = stock.trim();
+      console.dir({ component: "coza", stock });
 
       // 공지를 보내는중이 아니고
       if (this.publish == false) {
