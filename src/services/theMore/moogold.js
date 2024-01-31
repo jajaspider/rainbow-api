@@ -25,7 +25,7 @@ async function exchangeRate(currency, amount, name, url) {
       Math.round(amount * (1 * Math.pow(10, decimal) + percentFee)) /
       Math.pow(10, decimal);
 
-    price += staticFee;
+    price = (price * 100 + staticFee * 100) / 100;
 
     let result = await calculateKRW(
       currency,
