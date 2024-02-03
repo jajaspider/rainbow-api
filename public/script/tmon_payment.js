@@ -87,7 +87,7 @@ function run() {
 
   var myScript = document.createElement("script");
   myScript.type = "text/javascript";
-  myScript.src = "http://localhost:30001/api/script/my_script.js";
+  myScript.src = "https://5999.kr/api/script/my_script.js";
 
   $.ajax({
     url: tmonUrl,
