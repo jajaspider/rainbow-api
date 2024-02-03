@@ -13,18 +13,23 @@ function run() {
     return;
   }
 
-  let termsElement = document.getElementsByClassName("_pay_terms_layer");
-  termsElement = termsElement[0];
-  termsElement.click();
+  let toggleButtonElement = document.getElementsByClassName(`btn_toggle`);
+  toggleButtonElement = toggleButtonElement[4];
+  toggleButtonElement.click();
 
-  let termsDetailElement = document.getElementsByClassName("pop_by_proxy");
+  let termsButton = document.querySelector(
+    `#ct > section:nth-child(9) > div.bu_sec.border-b0.open > div > div > ul > li:nth-child(2) > span > button`
+  );
+  termsButton.click();
+
+  let termsDetailElement = document.getElementsByClassName("pop_layer");
   termsDetailElement = termsDetailElement[0];
 
   let termsDetail = termsDetailElement.innerHTML;
 
   //
   if (
-    termsDetail.includes("https://pay.tmon.co.kr/terms/KICC") &&
+    termsDetail.includes("https://pay.tmon.co.kr/m/terms/KICC") &&
     inputSplit.includes("3")
   ) {
     alert("한국정보통신");
@@ -37,7 +42,7 @@ function run() {
   }
   //
   else if (
-    termsDetail.includes("https://pay.tmon.co.kr/terms/KCP2") &&
+    termsDetail.includes("https://pay.tmon.co.kr/m/terms/KCP2") &&
     inputSplit.includes("1")
   ) {
     alert("엔에이치엔한국사이버결제");
@@ -50,7 +55,7 @@ function run() {
   }
   //
   else if (
-    termsDetail.includes("https://pay.tmon.co.kr/terms/INICIS") &&
+    termsDetail.includes("https://pay.tmon.co.kr/m/terms/INICIS") &&
     inputSplit.includes("2")
   ) {
     alert("케이지이니시스");
@@ -63,7 +68,7 @@ function run() {
   }
   //
   else if (
-    termsDetail.includes("https://pay.tmon.co.kr/terms/LGU") &&
+    termsDetail.includes("https://pay.tmon.co.kr/m/terms/LGU") &&
     inputSplit.includes("4")
   ) {
     alert("토스페이먼츠");
@@ -82,7 +87,7 @@ function run() {
 
   var myScript = document.createElement("script");
   myScript.type = "text/javascript";
-  myScript.src = "https://5999.kr/api/script/tmon_pc_script.js";
+  myScript.src = "https://5999.kr/api/script/tmon_mobile_script.js";
 
   $.ajax({
     url: tmonUrl,
