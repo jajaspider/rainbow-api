@@ -39,4 +39,4 @@ const offgamerSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Offgamer", offgamerSchema);
+module.exports = mongoose.model("OffgamerHistory", offgamerSchema);
