@@ -3,6 +3,7 @@ const dayjs = require("dayjs");
 
 const DB = require("../../models"),
   Offgamer = DB.Offgamer,
+  OffgamerHistory = DB.OffgamerHistory,
   OffgamerMeta = DB.OffgamerMeta;
 const { calculateKRW } = require("./index");
 const utils = require("../../utils");
@@ -34,6 +35,17 @@ async function exchangeRate(currency, amount, name, url) {
     );
 
     await Offgamer.create({
+      currency,
+      method: _.get(_meta, "method"),
+      origin_amount: amount,
+      currency_amount: price,
+      krw_amount: result.krwAmount,
+      product_url: url,
+      product_name: name,
+      date: givenDate.format("YYYYMMDD"),
+    });
+
+    await OffgamerHistory.create({
       currency,
       method: _.get(_meta, "method"),
       origin_amount: amount,
