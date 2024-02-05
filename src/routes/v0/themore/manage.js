@@ -5,9 +5,11 @@ const dayjs = require("dayjs");
 
 const DB = require("../../../models"),
   CurrencyCalc = DB.CurrencyCalc,
-  Currency = DB.Currency;
+  Currency = DB.Currency,
+  Moogold = DB.Moogold;
 const { RainbowError, ERROR_CODE } = require("../../../core/constants");
 const { calculateKRWRange } = require("../../../services/theMore");
+const { exchangeRate } = require("../../../services/theMore/moogold");
 const utils = require("../../../utils");
 
 router.post("/reGenerating", async function (req, res, next) {
@@ -65,6 +67,35 @@ router.post("/currency", async function (req, res, next) {
     }
 
     await Currency.updateOne({ currency }, { active });
+    return res.json({});
+  } catch (e) {
+    //
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
+router.post("/reGeneratingCow", async function (req, res, next) {
+  try {
+    let givenDate = dayjs();
+    let inquiryDate = _.get(req.body, "date", givenDate.format("YYYYMMDD"));
+
+    // await CurrencyCalc.deleteMany({ date: inquiryDate });
+
+    let todayMoogold = await Moogold.find({ date: inquiryDate });
+    todayMoogold = utils.toJSON(todayMoogold);
+    await Moogold.deleteMany({ date: inquiryDate });
+
+    for (let _moogold of todayMoogold) {
+      let currency = _.get(_moogold, "currency");
+      let amount = _.get(_moogold, "origin_amount");
+      let name = _.get(_moogold, "product_name");
+      let url = _.get(_moogold, "product_url");
+      await exchangeRate(currency, amount, name, url);
+    }
+
     return res.json({});
   } catch (e) {
     //
