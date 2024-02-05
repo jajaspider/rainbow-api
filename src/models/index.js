@@ -22,9 +22,9 @@ const currencySchema = require("./themore/currency");
 const offgamerSchema = require("./themore/offgamer");
 const offgamerHistorySchema = require("./themore/offgamerHistory");
 const offgamerMetaSchema = require("./themore/offgamerMeta");
-const mtcSchema = require("./themore/mtc");
-const mtcHistorySchema = require("./themore/mtcHistory");
-const mtcMetaSchema = require("./themore/mtcMeta");
+const mtcgameSchema = require("./themore/mtcgame");
+const mtcgameHistorySchema = require("./themore/mtcgameHistory");
+const mtcgameMetaSchema = require("./themore/mtcgameMeta");
 
 // const Selection = mongoose.model('Selection', selectionSchema);
 
@@ -49,7 +49,7 @@ module.exports = {
   Offgamer: offgamerSchema,
   OffgamerHistory: offgamerHistorySchema,
   OffgamerMeta: offgamerMetaSchema,
-  Mtc: mtcSchema,
-  MtcHistory: mtcHistorySchema,
-  MtcMeta: mtcMetaSchema,
+  Mtcgame: mtcgameSchema,
+  MtcgameHistory: mtcgameHistorySchema,
+  MtcgameMeta: mtcgameMetaSchema,
 };

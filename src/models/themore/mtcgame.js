@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Define Schemes
-const mtcSchema = new mongoose.Schema(
+const mtcgameSchema = new mongoose.Schema(
   {
     currency: {
       type: String,
@@ -39,4 +39,4 @@ const mtcSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("MtcHistory", mtcSchema);
+module.exports = mongoose.model("Mtcgame", mtcgameSchema);

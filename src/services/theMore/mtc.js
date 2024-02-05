@@ -2,9 +2,9 @@ const _ = require("lodash");
 const dayjs = require("dayjs");
 
 const DB = require("../../models"),
-  Mtc = DB.Mtc,
-  MtcHistory = DB.MtcHistory,
-  MtcMeta = DB.MtcMeta;
+  Mtcgame = DB.Mtcgame,
+  MtcgameHistory = DB.MtcgameHistory,
+  MtcgameMeta = DB.MtcgameMeta;
 const { calculateKRW } = require("./index");
 const utils = require("../../utils");
 
@@ -13,7 +13,7 @@ async function exchangeRate(currency, amount, name, url) {
   // 주어진 날짜
   let givenDate = dayjs();
 
-  let metas = await MtcMeta.find({ currency });
+  let metas = await MtcgameMeta.find({ currency });
   metas = utils.toJSON(metas);
 
   for (let _meta of metas) {
@@ -34,7 +34,7 @@ async function exchangeRate(currency, amount, name, url) {
       givenDate.format("YYYYMMDD")
     );
 
-    await Mtc.create({
+    await Mtcgame.create({
       currency,
       method: _.get(_meta, "method"),
       origin_amount: amount,
@@ -45,7 +45,7 @@ async function exchangeRate(currency, amount, name, url) {
       date: givenDate.format("YYYYMMDD"),
     });
 
-    await MtcHistory.create({
+    await MtcgameHistory.create({
       currency,
       method: _.get(_meta, "method"),
       origin_amount: amount,

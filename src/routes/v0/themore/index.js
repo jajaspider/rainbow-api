@@ -5,7 +5,7 @@ const foreignRateRouter = require("./foreignRate");
 const calculatorRouter = require("./calc");
 const moogoldRouter = require("./moogold");
 const offgamerRouter = require("./offgamer");
-const mtcRouter = require("./mtc");
+const mtcgameRouter = require("./mtc");
 const manageRouter = require("./manage");
 
 const DB = require("../../../models"),
@@ -247,7 +247,7 @@ router.use("/foreignRate", foreignRateRouter);
 router.use("/calculator", calculatorRouter);
 router.use("/moogold", moogoldRouter);
 router.use("/offgamer", offgamerRouter);
-router.use("/mtc", mtcRouter);
+router.use("/mtcgame", mtcgameRouter);
 router.use("/manage", manageRouter);
 
 module.exports = router;

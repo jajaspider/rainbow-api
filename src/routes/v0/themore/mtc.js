@@ -4,7 +4,7 @@ const _ = require("lodash");
 const dayjs = require("dayjs");
 
 const DB = require("../../../models"),
-  Mtc = DB.Mtc;
+  Mtcgame = DB.Mtcgame;
 const { RainbowError, ERROR_CODE } = require("../../../core/constants");
 const { exchangeRate } = require("../../../services/theMore/mtc");
 
@@ -16,7 +16,7 @@ router.get("/", async function (req, res, next) {
     let givenDate = dayjs();
     let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
 
-    let result = await Mtc.find({ date: inquiryDate });
+    let result = await Mtcgame.find({ date: inquiryDate });
     return res.json(result);
   } catch (e) {
     //
@@ -78,7 +78,7 @@ router.delete("/", async function (req, res, next) {
   if (!inquiryDate) {
     inquiryDate = dayjs().format("YYYYMMDD");
   }
-  await Mtc.deleteMany({ date: inquiryDate });
+  await Mtcgame.deleteMany({ date: inquiryDate });
   return res.json({});
 });
 

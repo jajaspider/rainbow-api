@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Define Schemes
-const mtcMetaSchema = new mongoose.Schema(
+const mtcgameSchema = new mongoose.Schema(
   {
     currency: {
       type: String,
@@ -11,16 +11,26 @@ const mtcMetaSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    percent_fee: {
+    origin_amount: {
       type: Number,
       required: true,
     },
-    static_fee: {
+    currency_amount: {
       type: Number,
       required: true,
     },
-    point: {
+    krw_amount: {
       type: Number,
+      required: true,
+    },
+    product_url: {
+      type: String,
+    },
+    product_name: {
+      type: String,
+    },
+    date: {
+      type: String,
       required: true,
     },
   },
@@ -29,4 +39,4 @@ const mtcMetaSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("MtcMeta", mtcMetaSchema);
+module.exports = mongoose.model("MtcgameHistory", mtcgameSchema);
