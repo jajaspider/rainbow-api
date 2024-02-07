@@ -2,6 +2,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
 const FormData = require("form-data");
+const dayjs = require("dayjs");
 
 const NoticeDB = require("../../models").Notice;
 const rabbitmq = require("../rabbitmq");
@@ -19,6 +20,10 @@ class Marabox {
   }
 
   async crawling() {
+    dayjs.locale("ko");
+    if (dayjs().hour() < 9) {
+      return;
+    }
     let response = null;
     try {
       response = await axios.get(`${this.prefix}`);

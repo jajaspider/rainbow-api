@@ -1,6 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
+const dayjs = require("dayjs");
 
 const rabbitmq = require("../rabbitmq");
 const NoticeDB = require("../../models").Notice;
@@ -19,6 +20,10 @@ class Horizon {
   }
 
   async crawling() {
+    dayjs.locale("ko");
+    if (dayjs().hour() < 9) {
+      return;
+    }
     try {
       let response = await axios.get(this.targetUrl);
       let html = cheerio.load(response.data);
