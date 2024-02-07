@@ -1,8 +1,10 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
+
 const rabbitmq = require("../rabbitmq");
 const NoticeDB = require("../../models").Notice;
+const { sendMessage } = require("../../services/theMore/telegram.handler");
 
 class Happymbook {
   constructor() {}
@@ -10,6 +12,8 @@ class Happymbook {
   async init() {
     this.targetUrl =
       "https://happymbook.com/products/korea-birthday-gift-item-happy-tshirts";
+    // this.targetUrl =
+    //   "https://happymbook.com/products/digital-planner-undated-digital-planner-ipad-planner-notability-planner-goodnotes-planner-daily-weekly-monthly-planner-2024-2025-undated";
 
     this.publishTime = new Date().getTime() - 1000 * 60 * 3;
     this.publish = false;
@@ -31,7 +35,7 @@ class Happymbook {
         if (stock == "Add to cart") {
           let publishObj = {
             url: this.targetUrl,
-            title: "[햄앤북 재고알림]",
+            title: "햄앤북 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -44,6 +48,7 @@ class Happymbook {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
           this.publish = true;
@@ -59,7 +64,7 @@ class Happymbook {
         ) {
           let publishObj = {
             url: this.targetUrl,
-            title: "[햄앤북 재고알림]",
+            title: "햄앤북 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -72,6 +77,7 @@ class Happymbook {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
         }
@@ -79,7 +85,7 @@ class Happymbook {
         else if (stock == "Sold out") {
           let publishObj = {
             url: "품절",
-            title: "[햄앤북 재고알림]",
+            title: "햄앤북 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -92,6 +98,7 @@ class Happymbook {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount = 0;
           this.publish = false;

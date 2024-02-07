@@ -1,8 +1,10 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
+
 const rabbitmq = require("../rabbitmq");
 const NoticeDB = require("../../models").Notice;
+const { sendMessage } = require("../../services/theMore/telegram.handler");
 
 class Horizon {
   constructor() {}
@@ -31,7 +33,7 @@ class Horizon {
         if (stock == "Add to cart") {
           let publishObj = {
             url: this.targetUrl,
-            title: "[호라이즌 재고알림]",
+            title: "호라이즌 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -44,6 +46,7 @@ class Horizon {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
           this.publish = true;
@@ -59,7 +62,7 @@ class Horizon {
         ) {
           let publishObj = {
             url: this.targetUrl,
-            title: "[호라이즌 재고알림]",
+            title: "호라이즌 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -72,6 +75,7 @@ class Horizon {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
         }
@@ -79,7 +83,7 @@ class Horizon {
         else if (stock == "Sold out") {
           let publishObj = {
             url: "품절",
-            title: "[호라이즌 재고알림]",
+            title: "호라이즌 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -92,6 +96,7 @@ class Horizon {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount = 0;
           this.publish = false;

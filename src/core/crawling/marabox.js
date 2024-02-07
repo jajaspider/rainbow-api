@@ -2,8 +2,10 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
 const FormData = require("form-data");
+
 const NoticeDB = require("../../models").Notice;
 const rabbitmq = require("../rabbitmq");
+const { sendMessage } = require("../../services/theMore/telegram.handler");
 
 class Marabox {
   constructor() {}
@@ -54,8 +56,8 @@ class Marabox {
         // 재고가 들어왔다면
         if (stock == "Add to cart") {
           let publishObj = {
-            url: `${this.prefix}/products/manila-history-bookn`,
-            title: "[마라탕 재고알림]\n비번 : maravip",
+            url: `비번 : maravip\n${this.prefix}/products/manila-history-bookn`,
+            title: "마라탕 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -68,6 +70,7 @@ class Marabox {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
           this.publish = true;
@@ -82,8 +85,8 @@ class Marabox {
           new Date().getTime() - this.publishTime >= 1000 * 60 * 3
         ) {
           let publishObj = {
-            url: `${this.prefix}/products/manila-history-bookn`,
-            title: "[마라탕 재고알림]\n비번 : maravip",
+            url: `비번 : maravip\n${this.prefix}/products/manila-history-bookn`,
+            title: "마라탕 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -96,6 +99,7 @@ class Marabox {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
         }
@@ -103,7 +107,7 @@ class Marabox {
         else if (stock == "Sold out") {
           let publishObj = {
             url: `품절`,
-            title: "[마라탕 재고알림]",
+            title: "마라탕 재고알림",
             type: "themoreNotice",
           };
           console.dir(publishObj);
@@ -116,6 +120,7 @@ class Marabox {
             "notice"
           );
           await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount = 0;
           this.publish = false;
