@@ -6,6 +6,7 @@ const dayjs = require("dayjs");
 const rabbitmq = require("../rabbitmq");
 const NoticeDB = require("../../models").Notice;
 const { sendMessage } = require("../../services/theMore/telegram.handler");
+const { calculateKRW } = require("../../services/theMore");
 
 class Horizon {
   constructor() {}
@@ -17,6 +18,7 @@ class Horizon {
     this.publishTime = new Date().getTime() - 1000 * 60 * 3;
     this.publish = false;
     this.publishCount = 0;
+    this.price = 0;
   }
 
   async crawling() {
@@ -32,6 +34,10 @@ class Horizon {
       stock = stock.replace(/\n/g, "");
       stock = stock.trim();
 
+      let price = html(`.price__regular`);
+      price = price.text();
+      price = price.replace(/[^0-9.]/g, "");
+
       // 공지를 보내는중이 아니고
       if (this.publish == false) {
         // 재고가 들어왔다면
@@ -41,6 +47,17 @@ class Horizon {
             title: "호라이즌 재고알림",
             type: "themoreNotice",
           };
+
+          if (_.isNumber(price)) {
+            let krwAmount = calculateKRW(
+              "TWD",
+              price,
+              dayjs().format("YYYYMMDD")
+            );
+            publishObj.url += `\n\n현재가격 : ${price}TWD\n원화가격 : ${krwAmount}원`;
+            this.price = krwAmount;
+          }
+
           console.dir(publishObj);
           // db에 공지데이터 넣기
           await NoticeDB.create(publishObj);
@@ -59,17 +76,29 @@ class Horizon {
       }
       // 공지를 보내는중이였고
       else {
-        // 재고가 들어왔고, 전송횟수가 3회 미만이며, 전송시간이 3분 지난경우
+        // 재고가 들어왔고, 전송횟수가 3회 미만이며, 전송시간이 3분 지난경우, 또한 가격이 같은 경우
         if (
           stock == "Add to cart" &&
           this.publishCount < 3 &&
-          new Date().getTime() - this.publishTime >= 1000 * 60 * 3
+          new Date().getTime() - this.publishTime >= 1000 * 60 * 3 &&
+          price == this.price
         ) {
           let publishObj = {
             url: this.targetUrl,
             title: "호라이즌 재고알림",
             type: "themoreNotice",
           };
+
+          if (_.isNumber(price)) {
+            let krwAmount = calculateKRW(
+              "TWD",
+              price,
+              dayjs().format("YYYYMMDD")
+            );
+            publishObj.url += `\n\n현재가격 : ${price}TWD\n원화가격 : ${krwAmount}원`;
+            this.price = krwAmount;
+          }
+
           console.dir(publishObj);
           // db에 공지데이터 넣기
           await NoticeDB.create(publishObj);
@@ -83,6 +112,36 @@ class Horizon {
           await sendMessage(publishObj.title, publishObj.url);
           this.publishTime = new Date().getTime();
           this.publishCount += 1;
+        } else if (stock == "Add to cart" && price != this.price) {
+          let publishObj = {
+            url: this.targetUrl,
+            title: "호라이즌 가격변동",
+            type: "themoreNotice",
+          };
+
+          if (_.isNumber(price)) {
+            let krwAmount = calculateKRW(
+              "TWD",
+              price,
+              dayjs().format("YYYYMMDD")
+            );
+            publishObj.url += `\n\n현재가격 : ${price}TWD\n원화가격 : ${krwAmount}원`;
+            this.price = krwAmount;
+          }
+
+          console.dir(publishObj);
+          // db에 공지데이터 넣기
+          await NoticeDB.create(publishObj);
+          await rabbitmq.assertQueue("notice.themore");
+          await rabbitmq.bindQueue(
+            "notice.themore",
+            rabbitmq.mqConfig.exchange,
+            "notice"
+          );
+          await rabbitmq.sendToQueue("notice.themore", publishObj);
+          await sendMessage(publishObj.title, publishObj.url);
+          this.publishTime = new Date().getTime();
+          this.publishCount = 1;
         }
         //공지를 보내던 중 품절이 발생
         else if (stock == "Sold out") {
@@ -105,6 +164,7 @@ class Horizon {
           this.publishTime = new Date().getTime();
           this.publishCount = 0;
           this.publish = false;
+          this.price = 0;
         }
       }
     } catch (e) {
