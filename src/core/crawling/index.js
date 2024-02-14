@@ -1,4 +1,5 @@
 require("./shinhan");
+require("./qoo10");
 
 const maplestory = require("./maplestory");
 const lostark = require("./lostark");
