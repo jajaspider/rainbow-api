@@ -24,6 +24,9 @@ class Horizon {
   async crawling() {
     dayjs.locale("ko");
     if (dayjs().hour() < 9) {
+      this.publish = false;
+      this.publishCount = 0;
+      this.price = 0;
       return;
     }
     try {
@@ -37,6 +40,7 @@ class Horizon {
       let price = html(`.price__regular`);
       price = price.text();
       price = price.replace(/[^0-9.]/g, "");
+      price = Number(price);
 
       // 공지를 보내는중이 아니고
       if (this.publish == false) {
@@ -49,13 +53,13 @@ class Horizon {
           };
 
           if (_.isNumber(price)) {
-            let krwAmount = calculateKRW(
+            let krwResult = await calculateKRW(
               "TWD",
               price,
               dayjs().format("YYYYMMDD")
             );
-            publishObj.url += `\n\n현재가격 : ${price}TWD\n원화가격 : ${krwAmount}원`;
-            this.price = krwAmount;
+            publishObj.url += `\n\n현재가격 : ${price} TWD\n원화가격 : ${krwResult.krwAmount}원`;
+            this.price = price;
           }
 
           console.dir(publishObj);
@@ -90,13 +94,13 @@ class Horizon {
           };
 
           if (_.isNumber(price)) {
-            let krwAmount = calculateKRW(
+            let krwResult = await calculateKRW(
               "TWD",
               price,
               dayjs().format("YYYYMMDD")
             );
-            publishObj.url += `\n\n현재가격 : ${price}TWD\n원화가격 : ${krwAmount}원`;
-            this.price = krwAmount;
+            publishObj.url += `\n\n현재가격 : ${price} TWD\n원화가격 : ${krwResult.krwAmount}원`;
+            this.price = price;
           }
 
           console.dir(publishObj);
@@ -120,13 +124,13 @@ class Horizon {
           };
 
           if (_.isNumber(price)) {
-            let krwAmount = calculateKRW(
+            let krwResult = await calculateKRW(
               "TWD",
               price,
               dayjs().format("YYYYMMDD")
             );
-            publishObj.url += `\n\n현재가격 : ${price}TWD\n원화가격 : ${krwAmount}원`;
-            this.price = krwAmount;
+            publishObj.url += `\n\n현재가격 : ${price} TWD\n원화가격 : ${krwResult.krwAmount}원`;
+            this.price = price;
           }
 
           console.dir(publishObj);
