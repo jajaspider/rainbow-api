@@ -7,6 +7,7 @@ const happymbook = require("./happymbook");
 const coza = require("./coza");
 const marabox = require("./marabox");
 const horizon = require("./horizon");
+const julingo3 = require("./julingo3");
 
 class Crawling {
   constructor() {}
@@ -17,6 +18,7 @@ class Crawling {
     await coza.init();
     await marabox.init();
     await horizon.init();
+    await julingo3.init();
 
     this.maplestoryNotice = setInterval(async () => {
       await maplestory.crawlingNotice();
@@ -43,6 +45,10 @@ class Crawling {
 
     this.horizonNotice = setInterval(async () => {
       await horizon.crawling();
+    }, 10000);
+
+    this.julingo3Notice = setInterval(async () => {
+      await julingo3.crawling();
     }, 10000);
   }
 }
