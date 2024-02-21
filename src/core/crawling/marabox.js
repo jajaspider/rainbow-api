@@ -7,6 +7,7 @@ const dayjs = require("dayjs");
 const NoticeDB = require("../../models").Notice;
 const rabbitmq = require("../rabbitmq");
 const { sendMessage } = require("../../services/theMore/telegram.handler");
+const { calculateKRW } = require("../../services/theMore");
 
 class Marabox {
   constructor() {}
