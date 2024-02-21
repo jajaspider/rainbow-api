@@ -9,7 +9,7 @@ const { calculateKRWRange } = require("../../services/theMore");
 
 // 매일 아침 9시에 실행되는 함수
 const shinhan = async () => {
-  console.dir("매일 아침 8시 40분 신한 data 파싱 시작");
+  console.dir("매일 아침 8시 50분 신한 data 파싱 시작");
 
   let givenDate = dayjs();
   let inquiryDate = givenDate.format("YYYYMMDD");
@@ -63,13 +63,13 @@ const shinhan = async () => {
 
 // shinhan();
 
-// 규칙 설정: 매일 아침 8시40분에 실행
+// 규칙 설정: 매일 아침 8시 50분에 실행
 const rule = new schedule.RecurrenceRule();
 rule.tz = "Asia/Seoul"; // 한국 시간대
 rule.hour = 8;
-rule.minute = 40;
+rule.minute = 50;
 rule.second = 0;
 
 // 작업 예약
 const job = schedule.scheduleJob(rule, shinhan);
-console.dir("매일 아침 8시 40분 신한 파싱 작업 대기");
+console.dir("매일 아침 8시 50분 신한 파싱 작업 대기");
