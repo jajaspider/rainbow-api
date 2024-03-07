@@ -94,9 +94,15 @@ async function calculateKRW(currency, amount, date) {
     foreignRate = utils.toJSON(foreignRate);
     // 수식 검증 필요
     usdAmount = currencyAmount * foreignRate.rate;
+    let usdAmount2 = currencyAmount * Number(foreignRate.rate.toFixed(6));
 
-    // 현재 themore app과 같은 로직
+    // 현재 잠자님 로직
     usdAmount = Math.round(usdAmount * 100) / 100;
+    usdAmount2 = Math.round(usdAmount2 * 100) / 100;
+
+    if (usdAmount2 > usdAmount) {
+      usdAmount = usdAmount2;
+    }
   } else {
     usdAmount = currencyAmount;
   }
@@ -105,7 +111,7 @@ async function calculateKRW(currency, amount, date) {
   let krwAmount = Math.floor(usdAmountAddVisa * krwRate.rate);
 
   let krwAmountAddFee =
-    krwAmount + Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate);
+    krwAmount + Math.floor(usdAmount * 0.0018 * krwRate.rate);
 
   let efficiency = (
     (((krwAmountAddFee % 1000) * 2) / krwAmountAddFee) *
