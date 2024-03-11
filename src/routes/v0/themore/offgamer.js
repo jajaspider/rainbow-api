@@ -73,13 +73,30 @@ router.post("/", async function (req, res, next) {
 });
 
 router.delete("/", async function (req, res, next) {
-  // 주어진 날짜
-  let inquiryDate = _.get(req.query, "date");
-  if (!inquiryDate) {
-    inquiryDate = dayjs().format("YYYYMMDD");
+  try {
+    // 주어진 날짜
+    let inquiryDate = _.get(req.query, "date");
+    if (!inquiryDate) {
+      inquiryDate = dayjs().format("YYYYMMDD");
+    }
+
+    let productName = _.get(req.query, "product_name");
+    if (_.isEmpty(productName)) {
+      throw new RainbowError({
+        httpCode: 400,
+        error: ERROR_CODE.MISSING_PARAMETER,
+        reason: `require product_name`,
+      });
+    }
+    await Offgamer.deleteMany({ date: inquiryDate, product_name: productName });
+    return res.json({});
+  } catch (e) {
+    console.dir(e);
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
   }
-  await Offgamer.deleteMany({ date: inquiryDate });
-  return res.json({});
 });
 
 module.exports = router;
