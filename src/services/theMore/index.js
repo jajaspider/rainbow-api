@@ -94,7 +94,7 @@ async function calculateKRW(currency, amount, date) {
     foreignRate = utils.toJSON(foreignRate);
     // 수식 검증 필요
     usdAmount = currencyAmount * foreignRate.rate;
-    let usdAmount2 = currencyAmount * Number(foreignRate.rate.toFixed(6));
+    let usdAmount2 = currencyAmount * foreignRate.rate.toPrecision(6);
 
     // 현재 잠자님 로직
     usdAmount = Math.round(usdAmount * 100) / 100;
