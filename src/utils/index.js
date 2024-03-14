@@ -6,4 +6,10 @@ function toJSON(dbData) {
   return dbData;
 }
 
-module.exports = { toJSON };
+async function sleep(milliseconds) {
+  await new Promise((resolve, reject) => {
+    setTimeout(resolve, milliseconds);
+  });
+}
+
+module.exports = { toJSON, sleep };
