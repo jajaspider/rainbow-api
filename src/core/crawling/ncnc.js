@@ -21,7 +21,8 @@ async function checkStatus() {
     }
 
     let isBlock = _.get(result, "isBlock");
-    if (isBlock == 0) {
+    let isRefuse = _.get(result, "isRefuse");
+    if (isBlock == 0 && isRefuse == 0) {
       let targetItem = await NCNCService.getItemById(_alarm.id);
       let noticeText = `${targetItem.brandName} ${targetItem.name}(${result.askingPrice}) 매입중`;
       await telegramService.sendMessage(_alarm.chat_id, noticeText);
