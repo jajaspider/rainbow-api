@@ -6,6 +6,9 @@ const axios = require("axios");
 const { RainbowError, ERROR_CODE } = require("../../../core/constants");
 const ncncService = require("../../../services/ncnc");
 
+const alarmRouter = require("./alarm");
+router.use("/alarm", alarmRouter);
+
 router.get("/getCategory", async (req, res, next) => {
   try {
     let category = await ncncService.getCategory();

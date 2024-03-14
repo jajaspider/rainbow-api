@@ -1,3 +1,5 @@
+const express = require("express");
+const router = express.Router();
 const _ = require("lodash");
 const DB = require("../../../models"),
   Alarm = DB.NCNCAlarm;
@@ -91,3 +93,5 @@ router.put("/disable", async (req, res, next) => {
     return res.status(500).send(e.message);
   }
 });
+
+module.exports = router;
