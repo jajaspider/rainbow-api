@@ -6,4 +6,5 @@ node_modules/
 
 # 
 *.develop.yaml
-public/
+public/*
+!/public/script/

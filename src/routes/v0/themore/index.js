@@ -4,6 +4,8 @@ const router = express.Router();
 const foreignRateRouter = require("./foreignRate");
 const calculatorRouter = require("./calc");
 const moogoldRouter = require("./moogold");
+const offgamerRouter = require("./offgamer");
+const mtcgameRouter = require("./mtc");
 const manageRouter = require("./manage");
 
 const DB = require("../../../models"),
@@ -244,6 +246,8 @@ router.get("/", async (req, res, next) => {
 router.use("/foreignRate", foreignRateRouter);
 router.use("/calculator", calculatorRouter);
 router.use("/moogold", moogoldRouter);
+router.use("/offgamer", offgamerRouter);
+router.use("/mtcgame", mtcgameRouter);
 router.use("/manage", manageRouter);
 
 module.exports = router;

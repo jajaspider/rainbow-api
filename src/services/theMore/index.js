@@ -83,7 +83,7 @@ async function calculateKRW(currency, amount, date) {
   }
 
   let usdAmount = 0;
-  let currencyAmount = amount;
+  let currencyAmount = Number(amount);
 
   if (currency != "USD") {
     let foreignRate = await ForeignRate.findOne({
@@ -94,17 +94,15 @@ async function calculateKRW(currency, amount, date) {
     foreignRate = utils.toJSON(foreignRate);
     // 수식 검증 필요
     usdAmount = currencyAmount * foreignRate.rate;
+    let usdAmount2 = currencyAmount * foreignRate.rate.toPrecision(6);
 
-    let result = usdAmount.toFixed(6); // 소수점 6자리까지 반올림
-    let resultString = result.toString();
-    let down = resultString.split(".")[1];
-    let testNum = down.slice(3, 6);
-    if (Number(testNum) >= 800) {
-      usdAmount = Math.ceil(usdAmount * 1000) / 1000;
-    } else {
-      usdAmount = Math.floor(usdAmount * 1000) / 1000;
+    // 현재 잠자님 로직
+    usdAmount = Math.round(usdAmount * 100) / 100;
+    usdAmount2 = Math.round(usdAmount2 * 100) / 100;
+
+    if (usdAmount2 > usdAmount) {
+      usdAmount = usdAmount2;
     }
-    usdAmount = usdAmount.toFixed(2);
   } else {
     usdAmount = currencyAmount;
   }
@@ -113,7 +111,7 @@ async function calculateKRW(currency, amount, date) {
   let krwAmount = Math.floor(usdAmountAddVisa * krwRate.rate);
 
   let krwAmountAddFee =
-    krwAmount + Math.floor(usdAmountAddVisa * 0.0018 * krwRate.rate);
+    krwAmount + Math.floor(usdAmount * 0.0018 * krwRate.rate);
 
   let efficiency = (
     (((krwAmountAddFee % 1000) * 2) / krwAmountAddFee) *
