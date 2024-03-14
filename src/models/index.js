@@ -29,6 +29,7 @@ const mtcgameMetaSchema = require("./themore/mtcgameMeta");
 const NCNCCategorySchema = require("./ncnc/category");
 const NCNCBrandSchema = require("./ncnc/brand");
 const NCNCItemSchema = require("./ncnc/item");
+const NCNCAlarmSchema = require("./ncnc/alarm");
 
 // const Selection = mongoose.model('Selection', selectionSchema);
 
@@ -59,4 +60,5 @@ module.exports = {
   NCNCCategory: NCNCCategorySchema,
   NCNCBrand: NCNCBrandSchema,
   NCNCItem: NCNCItemSchema,
+  NCNCAlarm: NCNCAlarmSchema,
 };

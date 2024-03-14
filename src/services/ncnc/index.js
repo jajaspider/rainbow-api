@@ -89,6 +89,13 @@ async function updateItem() {
   }
 }
 
+async function getItemById(id) {
+  let targetItems = await Item.findOne({ id: id });
+  targetItems = utils.toJSON(targetItems);
+
+  return targetItems;
+}
+
 async function getItemByName(name) {
   const nameRegex = new RegExp(`${name}`, "i");
   let targetItems = await Item.find({ name: nameRegex });
@@ -118,5 +125,6 @@ module.exports = {
   updateBrand,
   getBrand,
   getItemByName,
+  getItemById,
   getItemStatus,
 };

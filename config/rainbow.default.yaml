@@ -12,3 +12,4 @@ rabbitmq:
   exchange: rainbow
 
 nexon_api_key: ""
+telegram_api_key: ""
