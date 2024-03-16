@@ -20,9 +20,10 @@ async function checkStatus() {
       continue;
     }
 
+    let price = _.get(result, "askingPrice");
     let isBlock = _.get(result, "isBlock");
     let isRefuse = _.get(result, "isRefuse");
-    if (isBlock == 0 && isRefuse == 0) {
+    if (isBlock == 0 && isRefuse == 0 && _alarm.price < price) {
       let targetItem = await NCNCService.getItemById(_alarm.id);
       let noticeText = `${targetItem.brandName} ${targetItem.name}(${result.askingPrice}) 매입중`;
       await telegramService.sendMessage(_alarm.chat_id, noticeText);
