@@ -26,6 +26,11 @@ const mtcgameSchema = require("./themore/mtcgame");
 const mtcgameHistorySchema = require("./themore/mtcgameHistory");
 const mtcgameMetaSchema = require("./themore/mtcgameMeta");
 
+const NCNCCategorySchema = require("./ncnc/category");
+const NCNCBrandSchema = require("./ncnc/brand");
+const NCNCItemSchema = require("./ncnc/item");
+const NCNCAlarmSchema = require("./ncnc/alarm");
+
 // const Selection = mongoose.model('Selection', selectionSchema);
 
 module.exports = {
@@ -52,4 +57,8 @@ module.exports = {
   Mtcgame: mtcgameSchema,
   MtcgameHistory: mtcgameHistorySchema,
   MtcgameMeta: mtcgameMetaSchema,
+  NCNCCategory: NCNCCategorySchema,
+  NCNCBrand: NCNCBrandSchema,
+  NCNCItem: NCNCItemSchema,
+  NCNCAlarm: NCNCAlarmSchema,
 };

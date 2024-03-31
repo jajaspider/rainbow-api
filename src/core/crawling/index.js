@@ -8,6 +8,7 @@ const coza = require("./coza");
 const marabox = require("./marabox");
 const horizon = require("./horizon");
 const julingo3 = require("./julingo3");
+const ncncCheckStatus = require("./ncnc");
 
 class Crawling {
   constructor() {}
@@ -50,6 +51,10 @@ class Crawling {
     this.julingo3Notice = setInterval(async () => {
       await julingo3.crawling();
     }, 10000);
+
+    setInterval(async () => {
+      await ncncCheckStatus();
+    }, 60000);
   }
 }
 
