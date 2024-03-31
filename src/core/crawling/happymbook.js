@@ -2,6 +2,11 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const rabbitmq = require("../rabbitmq");
 const NoticeDB = require("../../models").Notice;
@@ -21,11 +26,11 @@ class Happymbook {
     this.publish = false;
     this.publishCount = 0;
     this.price = 0;
+    this.koreanTime = dayjs().tz("Asia/Seoul");
   }
 
   async crawling() {
-    dayjs.locale("ko");
-    if (dayjs().hour() < 9) {
+    if (this.koreanTime.hour() < 9) {
       this.publish = false;
       this.publishCount = 0;
       this.price = 0;
@@ -58,7 +63,7 @@ class Happymbook {
             let krwResult = await calculateKRW(
               "USD",
               price,
-              dayjs().format("YYYYMMDD")
+              this.koreanTime.format("YYYYMMDD")
             );
             publishObj.url += `\n\n현재가격 : ${price} USD\n원화가격 : ${krwResult.krwAmount}원`;
             this.price = price;
@@ -99,7 +104,7 @@ class Happymbook {
             let krwResult = await calculateKRW(
               "USD",
               price,
-              dayjs().format("YYYYMMDD")
+              this.koreanTime.format("YYYYMMDD")
             );
             publishObj.url += `\n\n현재가격 : ${price} USD\n원화가격 : ${krwResult.krwAmount}원`;
             this.price = price;
@@ -129,7 +134,7 @@ class Happymbook {
             let krwResult = await calculateKRW(
               "USD",
               price,
-              dayjs().format("YYYYMMDD")
+              this.koreanTime.format("YYYYMMDD")
             );
             publishObj.url += `\n\n현재가격 : ${price} USD\n원화가격 : ${krwResult.krwAmount}원`;
             this.price = price;

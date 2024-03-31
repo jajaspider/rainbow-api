@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../../models"),
   CurrencyCalc = DB.CurrencyCalc,
@@ -14,7 +19,7 @@ const utils = require("../../../utils");
 
 router.post("/reGenerating", async function (req, res, next) {
   try {
-    let givenDate = dayjs();
+    let givenDate = dayjs().tz("Asia/Seoul");
     let inquiryDate = _.get(req.body, "date", givenDate.format("YYYYMMDD"));
 
     await CurrencyCalc.deleteMany({ date: inquiryDate });
@@ -37,10 +42,8 @@ router.post("/reGenerating", async function (req, res, next) {
 
 router.post("/currency", async function (req, res, next) {
   try {
-    let givenDate = dayjs();
+    let givenDate = dayjs().tz("Asia/Seoul");
     let inquiryDate = givenDate.format("YYYYMMDD");
-
-    dayjs.locale("ko");
 
     let currency = _.get(req.body, "currency");
     if (!currency) {
@@ -79,7 +82,7 @@ router.post("/currency", async function (req, res, next) {
 
 router.post("/reGeneratingCow", async function (req, res, next) {
   try {
-    let givenDate = dayjs();
+    let givenDate = dayjs().tz("Asia/Seoul");
     let inquiryDate = _.get(req.body, "date", givenDate.format("YYYYMMDD"));
 
     // await CurrencyCalc.deleteMany({ date: inquiryDate });

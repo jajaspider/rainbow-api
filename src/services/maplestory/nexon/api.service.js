@@ -3,6 +3,11 @@ const fs = require("fs");
 const yaml = require("js-yaml");
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../../models"),
   Ocid = DB.Ocid,
@@ -65,7 +70,10 @@ async function getCharacterInfo(ocid) {
     today.setUTCHours(today.getUTCHours() + 1);
     // console.dir(today);
 
-    let inquiryDate = dayjs().add(-1, "day").format("YYYY-MM-DD");
+    let inquiryDate = dayjs()
+      .tz("Asia/Seoul")
+      .add(-1, "day")
+      .format("YYYY-MM-DD");
 
     let maplestoryCharacter = await MaplestoryCharacter.find({
       ocid,
@@ -142,7 +150,10 @@ async function getUnionInfo(ocid) {
     // 새벽 1시를 기준으로한 데이터 조회
     today.setUTCHours(today.getUTCHours() + 1);
 
-    let inquiryDate = dayjs().add(-1, "day").format("YYYY-MM-DD");
+    let inquiryDate = dayjs()
+      .tz("Asia/Seoul")
+      .add(-1, "day")
+      .format("YYYY-MM-DD");
 
     let apiKey = _.get(config, "nexon_api.key");
     let mapleStoryApi = _.get(config, "nexon_api.url");

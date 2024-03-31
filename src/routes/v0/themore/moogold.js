@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../../models"),
   Moogold = DB.Moogold;
@@ -10,10 +15,8 @@ const { exchangeRate } = require("../../../services/theMore/moogold");
 
 router.get("/", async function (req, res, next) {
   try {
-    dayjs.locale("ko");
-
     // 주어진 날짜
-    let givenDate = dayjs();
+    let givenDate = dayjs().tz("Asia/Seoul");
     let inquiryDate = _.get(req.query, "date", givenDate.format("YYYYMMDD"));
 
     let result = await Moogold.find({ date: inquiryDate });
@@ -30,7 +33,7 @@ router.get("/", async function (req, res, next) {
 router.post("/", async function (req, res, next) {
   try {
     // 주어진 날짜
-    let givenDate = dayjs();
+    let givenDate = dayjs().tz("Asia/Seoul");
 
     let reqBody = _.get(req, "body");
 

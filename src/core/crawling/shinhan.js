@@ -1,7 +1,12 @@
 const schedule = require("node-schedule");
-const dayjs = require("dayjs");
 const _ = require("lodash");
 const axios = require("axios");
+const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../models"),
   ForeignRate = DB.ForeignRate;
@@ -11,7 +16,7 @@ const { calculateKRWRange } = require("../../services/theMore");
 const shinhan = async () => {
   console.dir("매일 아침 8시 50분 신한 data 파싱 시작");
 
-  let givenDate = dayjs();
+  let givenDate = dayjs().tz("Asia/Seoul");
   let inquiryDate = givenDate.format("YYYYMMDD");
 
   let shinhanUrl = `https://bank.shinhan.com/serviceEndpoint/httpDigital`;

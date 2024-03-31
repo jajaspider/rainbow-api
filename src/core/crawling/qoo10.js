@@ -1,6 +1,11 @@
 const axios = require("axios");
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 const schedule = require("node-schedule");
 
 const rabbitmq = require("../rabbitmq");
@@ -24,7 +29,8 @@ function transformAndRound(number) {
 const crawling = async () => {
   let prefix = "https://stsg-a.image-gmkt.com/js3";
   try {
-    let yyyymmdd = dayjs().format("YYYYMMDD");
+    let koreanTime = dayjs().tz("Asia/Seoul");
+    let yyyymmdd = koreanTime.format("YYYYMMDD");
     let targetUrl = `${prefix}/constant_value.v_${yyyymmdd}11.js`;
     let result = await axios.get(targetUrl);
     let data = _.get(result, "data");

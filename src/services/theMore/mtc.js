@@ -1,5 +1,10 @@
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../models"),
   Mtcgame = DB.Mtcgame,
@@ -9,9 +14,8 @@ const { calculateKRW } = require("./index");
 const utils = require("../../utils");
 
 async function exchangeRate(currency, amount, name, url) {
-  dayjs.locale("ko");
   // 주어진 날짜
-  let givenDate = dayjs();
+  let givenDate = dayjs().tz("Asia/Seoul");
 
   let metas = await MtcgameMeta.find({ currency });
   metas = utils.toJSON(metas);
