@@ -1,5 +1,10 @@
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../models");
 const Symbol = DB.Symbol;
@@ -154,8 +159,8 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
     let requireAthentic = athentic.requireAthenticSymbol - currentSymbol;
     result.requireAthentic = requireAthentic;
 
-    let cerniumDate = dayjs();
-    let athenticDate = dayjs();
+    let cerniumDate = dayjs().tz("Asia/Seoul");
+    let athenticDate = dayjs().tz("Asia/Seoul");
 
     let supplyCerniumSymbol = 20;
     let supplyAthenticSymbol = 10;
@@ -188,7 +193,7 @@ async function getSymbolGrwoth(symbolLevel, currentSymbol) {
   let requireArcane = arcane.requireArcaneSymbol - currentSymbol;
   result.requireArcane = requireArcane;
 
-  let arcaneDate = dayjs();
+  let arcaneDate = dayjs().tz("Asia/Seoul");
   let week = arcaneDate.get("d");
   let weekday = 0;
   if (week == 0) {

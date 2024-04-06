@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const DB = require("../../../models"),
   CurrencyCalc = DB.CurrencyCalc,
@@ -12,14 +17,14 @@ const utils = require("../../../utils");
 
 router.get("/", async function (req, res, next) {
   try {
-    dayjs.locale("ko");
+    let koreanTime = dayjs().tz("Asia/Seoul");
 
     // 주어진 날짜
     let inquiryDate = _.get(req.query, "date");
     if (!inquiryDate) {
-      inquiryDate = dayjs().format("YYYYMMDD");
-      if (dayjs().hour() < 9) {
-        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      inquiryDate = koreanTime.format("YYYYMMDD");
+      if (koreanTime.hour() < 9) {
+        inquiryDate = koreanTime.subtract(1, "day").format("YYYYMMDD");
       }
     }
 
@@ -45,13 +50,13 @@ router.get("/", async function (req, res, next) {
 
 router.get("/allCurrency", async function (req, res, next) {
   try {
-    dayjs.locale("ko");
+    let koreanTime = dayjs().tz("Asia/Seoul");
 
     let inquiryDate = _.get(req.query, "date");
     if (!inquiryDate) {
-      inquiryDate = dayjs().format("YYYYMMDD");
-      if (dayjs().hour() < 9) {
-        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      inquiryDate = koreanTime.format("YYYYMMDD");
+      if (koreanTime.hour() < 9) {
+        inquiryDate = koreanTime.subtract(1, "day").format("YYYYMMDD");
       }
     }
 
@@ -71,13 +76,13 @@ router.get("/allCurrency", async function (req, res, next) {
 
 router.post("/", async function (req, res, next) {
   try {
-    dayjs.locale("ko");
+    let koreanTime = dayjs().tz("Asia/Seoul");
 
     let inquiryDate = _.get(req.query, "date");
     if (!inquiryDate) {
-      inquiryDate = dayjs().format("YYYYMMDD");
-      if (dayjs().hour() < 9) {
-        inquiryDate = dayjs().subtract(1, "day").format("YYYYMMDD");
+      inquiryDate = koreanTime.format("YYYYMMDD");
+      if (koreanTime.hour() < 9) {
+        inquiryDate = koreanTime.subtract(1, "day").format("YYYYMMDD");
       }
     }
     let currency = _.get(req.query, "currency");

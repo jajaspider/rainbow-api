@@ -3,6 +3,11 @@ const cheerio = require("cheerio");
 const _ = require("lodash");
 const FormData = require("form-data");
 const dayjs = require("dayjs");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const NoticeDB = require("../../models").Notice;
 const rabbitmq = require("../rabbitmq");
@@ -19,11 +24,11 @@ class Marabox {
     this.publish = false;
     this.publishCount = 0;
     this.price = 0;
+    this.koreanTime = dayjs().tz("Asia/Seoul");
   }
 
   async crawling() {
-    dayjs.locale("ko");
-    if (dayjs().hour() < 9) {
+    if (this.koreanTime.hour() < 9) {
       this.publish = false;
       this.publishCount = 0;
       this.price = 0;
@@ -80,7 +85,7 @@ class Marabox {
             let krwResult = await calculateKRW(
               "PHP",
               price,
-              dayjs().format("YYYYMMDD")
+              this.koreanTime.format("YYYYMMDD")
             );
             publishObj.url += `\n\n현재가격 : ${price} PHP\n원화가격 : ${krwResult.krwAmount}원`;
             this.price = price;
@@ -121,7 +126,7 @@ class Marabox {
             let krwResult = await calculateKRW(
               "PHP",
               price,
-              dayjs().format("YYYYMMDD")
+              this.koreanTime.format("YYYYMMDD")
             );
             publishObj.url += `\n\n현재가격 : ${price} PHP\n원화가격 : ${krwResult.krwAmount}원`;
             this.price = price;
@@ -151,7 +156,7 @@ class Marabox {
             let krwResult = await calculateKRW(
               "PHP",
               price,
-              dayjs().format("YYYYMMDD")
+              this.koreanTime.format("YYYYMMDD")
             );
             publishObj.url += `\n\n현재가격 : ${price} PHP\n원화가격 : ${krwResult.krwAmount}원`;
             this.price = price;
