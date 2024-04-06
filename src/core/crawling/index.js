@@ -8,6 +8,7 @@ const coza = require("./coza");
 const marabox = require("./marabox");
 const horizon = require("./horizon");
 const julingo3 = require("./julingo3");
+const tbtro = require('./tbtro');
 const ncncCheckStatus = require("./ncnc");
 
 class Crawling {
@@ -20,6 +21,7 @@ class Crawling {
     await marabox.init();
     await horizon.init();
     await julingo3.init();
+    await tbtro.init();
 
     this.maplestoryNotice = setInterval(async () => {
       await maplestory.crawlingNotice();
@@ -50,6 +52,10 @@ class Crawling {
 
     this.julingo3Notice = setInterval(async () => {
       await julingo3.crawling();
+    }, 10000);
+
+    this.tbtroNotice = setInterval(async () => {
+      await tbtro.crawling();
     }, 10000);
 
     setInterval(async () => {
