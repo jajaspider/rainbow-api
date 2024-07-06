@@ -127,4 +127,5 @@ module.exports = {
   getItemByName,
   getItemById,
   getItemStatus,
+  updateItem,
 };

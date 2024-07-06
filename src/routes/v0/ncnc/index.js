@@ -57,6 +57,18 @@ router.put("/updateBrand", async (req, res, next) => {
   }
 });
 
+router.put("/updateItem", async (req, res, next) => {
+  try {
+    await ncncService.updateItem();
+    return res.json({});
+  } catch (e) {
+    if (e instanceof RainbowError) {
+      return res.status(e.httpCode).send(`${e.error.message} : ${e.reason}`);
+    }
+    return res.status(500).send(e.message);
+  }
+});
+
 router.get("/getItem", async (req, res, next) => {
   try {
     let itemName = _.get(req.query, "name");
