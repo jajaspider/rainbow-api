@@ -4,6 +4,7 @@ const qs = require("querystring");
 
 const Tmon = require("../../models").Tmon;
 const { sendMessage } = require("../../services/theMore/telegram.handler");
+const rabbitmq = require("../rabbitmq");
 
 const requestPagenationQuery = async (url, query) => {
   let result = [];
@@ -77,6 +78,19 @@ const voucherDetect = async () => {
         `${itemName}`,
         `[신규등록]\n${itemPrice}원\n${itemUrl}`
       );
+
+      let publishObj = {
+        url: `[신규등록]\n${itemPrice}원\n${itemUrl}`,
+        title: `${itemName}`,
+      };
+
+      await rabbitmq.assertQueue("notice.financial");
+      await rabbitmq.bindQueue(
+        "notice.financial",
+        rabbitmq.mqConfig.exchange,
+        "notice"
+      );
+      await rabbitmq.sendToQueue("notice.financial", publishObj);
     } else if (itemUpdateTime !== _.get(targetItem, "update_time")) {
       //   console.dir({ itemName, itemUuid, itemUpdateTime, itemPrice, itemUrl });
       await Tmon.findOneAndUpdate(
@@ -98,6 +112,18 @@ const voucherDetect = async () => {
         url: itemUrl,
       });
       await sendMessage(`${itemName}`, `[재등록]\n${itemPrice}원\n${itemUrl}`);
+      let publishObj = {
+        url: `[재등록]\n${itemPrice}원\n${itemUrl}`,
+        title: `${itemName}`,
+      };
+
+      await rabbitmq.assertQueue("notice.financial");
+      await rabbitmq.bindQueue(
+        "notice.financial",
+        rabbitmq.mqConfig.exchange,
+        "notice"
+      );
+      await rabbitmq.sendToQueue("notice.financial", publishObj);
     }
   }
 };
