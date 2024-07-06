@@ -2,29 +2,22 @@ const _ = require("lodash");
 const axios = require("axios");
 const qs = require("querystring");
 
-const Tmon = require("../../models").Tmon;
+const Wemakeprice = require("../../models").Wemakeprice;
 const { sendMessage } = require("../../services/theMore/telegram.handler");
 const rabbitmq = require("../rabbitmq");
 
-class TMON {
+class WEMAKEPRICE {
   constructor() {
     this.vouchers = [];
   }
 
   async init() {
-    const tmon = await Tmon.find({});
-    this.vouchers = JSON.parse(JSON.stringify(tmon));
-    this.url = `https://www.tmon.co.kr/api/direct/v1/categorylistapi/api/strategy/filter/80020000/deals`;
-    this.query = {
-      size: 100,
-      page: 0,
-      sortType: "POPULAR",
-      platform: "PC_WEB",
-    };
+    const wemakeprice = await Wemakeprice.find({});
+    this.vouchers = JSON.parse(JSON.stringify(wemakeprice));
+    this.url = `https://front.wemakeprice.com/api/listingsearch/v1.2/deal/list.json?os=pc&apiVersion=1.2&domain=listingsearch-api.wemakeprice.com&path=%2Fv1.2%2Fdeal%2Flist&categoryId=2100239&perPage=100`;
   }
 
   async sendNotice(title, text) {
-    // console.dir({ type: "console 메세지", title, text });
     await sendMessage(text);
     let publishObj = {
       url: text,
@@ -39,46 +32,46 @@ class TMON {
     await rabbitmq.sendToQueue("notice.financial", publishObj);
   }
 
-  async requestPagenationQuery(url, query) {
+  async requestPagenationQuery(url) {
     let result = [];
-    const queryString = qs.stringify(query);
-    let requestUrl = `${url}?${queryString}`;
+    const response = await axios.get(url);
 
-    const response = await axios.get(requestUrl);
     const responseData = _.get(response, "data.data");
-    // console.dir(responseData);
 
-    const totalCount = _.get(responseData, "totalCount");
-    const pageIndex = _.get(responseData, "pageIndex");
-    const itemCount = _.get(responseData, "itemCount");
-    const hasNextPage = _.get(responseData, "hasNextPage");
-    const items = _.get(responseData, "items");
-    console.dir({ totalCount, pageIndex, itemCount, hasNextPage });
+    const pagination = _.get(responseData, "pagination");
+    console.dir(pagination);
 
+    const items = _.get(responseData, "deals");
     result = _.concat(result, items);
-    if (hasNextPage === true) {
-      query.page += 1;
-      let recursiveResponse = await requestPagenationQuery(url, query);
+
+    const nextUrl = _.get(pagination, "nextUrl");
+    if (nextUrl !== null) {
+      let recursiveResponse = await requestPagenationQuery(nextUrl);
       result = _.concat(result, recursiveResponse);
     }
+
     return result;
   }
 
   async voucherDetect() {
-    // const url = `https://www.tmon.co.kr/api/direct/v1/categorylistapi/api/strategy/filter/80020000/deals`;
-
     try {
-      let items = await this.requestPagenationQuery(this.url, this.query);
+      let items = await this.requestPagenationQuery(this.url);
+
       for (let _item of items) {
-        let itemName = _.get(_item, "titleName", "상품명");
-        let itemUuid = _.get(_item, "dealNo");
-        let itemPrice = _.get(_item, "priceInfo.price");
-        let itemUrl = `https://www.tmon.co.kr/deal/${itemUuid}`;
+        let itemName = _.get(_item, "dispNm", "상품명");
+        let itemUuid = _.get(_item, "link.value");
+        let itemPrice =
+          _.get(_item, "discountPrice") ||
+          _.get(_item, "salePrice") ||
+          _.get(_item, "originPrice");
+        // itemUuid = parseInt(itemUuid);
+        let itemUrl = `https://front.wemakeprice.com/product/${itemUuid}`;
 
         let targetVoucher = _.find(this.vouchers, { uuid: itemUuid });
         // 바우처가 없는데 리스트에 생김 -> 신규 등록
         if (_.isEmpty(targetVoucher)) {
-          await Tmon.create({
+          console.dir({ uuid: itemUuid, targetVoucher, _item });
+          await Wemakeprice.create({
             name: itemName,
             uuid: itemUuid,
             price: itemPrice,
@@ -101,7 +94,7 @@ class TMON {
         else {
           // 재등록 됨
           if (!_.get(targetVoucher, "isActive")) {
-            await Tmon.findOneAndUpdate(
+            await Wemakeprice.findOneAndUpdate(
               { uuid: itemUuid },
               {
                 name: itemName,
@@ -129,13 +122,14 @@ class TMON {
       let activeVouchers = _.filter(this.vouchers, { isActive: true });
 
       for (const _activeVoucher of activeVouchers) {
-        const targetActiveVoucher = _.find(items, {
-          dealNo: _activeVoucher.uuid,
-        });
+        const targetActiveVoucher = _.find(
+          items,
+          _.matchesProperty("link.value", _activeVoucher.uuid)
+        );
 
         if (_.isEmpty(targetActiveVoucher)) {
           // 만약 현재 active 바우처에서 찾지못한다면
-          await Tmon.findOneAndUpdate(
+          await Wemakeprice.findOneAndUpdate(
             { uuid: _activeVoucher.uuid },
             { isActive: false }
           );
@@ -147,12 +141,12 @@ class TMON {
         }
       }
 
-      this.vouchers = await Tmon.find({});
+      this.vouchers = await Wemakeprice.find({});
     } catch (e) {
       //
     }
   }
 }
 
-const tmon = new TMON();
-module.exports = tmon;
+const wemakeprice = new WEMAKEPRICE();
+module.exports = wemakeprice;

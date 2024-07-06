@@ -32,6 +32,7 @@ const NCNCItemSchema = require("./ncnc/item");
 const NCNCAlarmSchema = require("./ncnc/alarm");
 
 const TmonSchema = require("./tmon");
+const WemakepriceSchema = require("./wemakeprice");
 
 // const Selection = mongoose.model('Selection', selectionSchema);
 
@@ -64,4 +65,5 @@ module.exports = {
   NCNCItem: NCNCItemSchema,
   NCNCAlarm: NCNCAlarmSchema,
   Tmon: TmonSchema,
+  Wemakeprice: WemakepriceSchema,
 };

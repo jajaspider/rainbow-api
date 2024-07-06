@@ -11,7 +11,8 @@ const julingo3 = require("./julingo3");
 const tbtro = require("./tbtro");
 const soul = require("./soul");
 const ncncCheckStatus = require("./ncnc");
-const { voucherDetect } = require("./tmon");
+const tmon = require("./tmon");
+const wemakeprice = require("./wemakeprice");
 
 class Crawling {
   constructor() {}
@@ -25,6 +26,8 @@ class Crawling {
     // await julingo3.init();
     // await tbtro.init();
     // await soul.init();
+    await tmon.init();
+    await wemakeprice.init();
 
     this.maplestoryNotice = setInterval(async () => {
       await maplestory.crawlingNotice();
@@ -70,8 +73,12 @@ class Crawling {
     }, 60000);
 
     setInterval(async () => {
-      await voucherDetect();
-    }, 60000);
+      await tmon.voucherDetect();
+    }, 30000);
+
+    setInterval(async () => {
+      await wemakeprice.voucherDetect();
+    }, 30000);
   }
 }
 

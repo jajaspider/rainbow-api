@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Types = mongoose.Schema.Types;
 
 // Define Schemes
-const tmonSchema = new mongoose.Schema(
+const wemakepriceSchema = new mongoose.Schema(
   {
     name: {
       type: Types.String,
@@ -32,4 +32,4 @@ const tmonSchema = new mongoose.Schema(
 );
 
 // Create Model & Export
-module.exports = mongoose.model("Tmon", tmonSchema);
+module.exports = mongoose.model("Wemakeprice", wemakepriceSchema);
