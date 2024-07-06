@@ -3,6 +3,7 @@ const axios = require("axios");
 const qs = require("querystring");
 
 const Tmon = require("../../models").Tmon;
+const { sendMessage } = require("../../services/theMore/telegram.handler");
 
 const requestPagenationQuery = async (url, query) => {
   let result = [];
@@ -72,7 +73,10 @@ const voucherDetect = async () => {
         url: itemUrl,
       });
 
-      await sendMessage(`신규등록\n\n${itemName}`, `${price}원\nitemUrl`);
+      await sendMessage(
+        `${itemName}`,
+        `[신규등록]\n${itemPrice}원\n${itemUrl}`
+      );
     } else if (itemUpdateTime !== _.get(targetItem, "update_time")) {
       //   console.dir({ itemName, itemUuid, itemUpdateTime, itemPrice, itemUrl });
       await Tmon.findOneAndUpdate(
@@ -93,7 +97,7 @@ const voucherDetect = async () => {
         price: itemPrice,
         url: itemUrl,
       });
-      await sendMessage(`재등록\n\n${itemName}`, `${price}원\nitemUrl`);
+      await sendMessage(`${itemName}`, `[재등록]\n${itemPrice}원\n${itemUrl}`);
     }
   }
 };
