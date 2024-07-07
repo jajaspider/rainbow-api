@@ -134,10 +134,10 @@ class WEMAKEPRICE {
             { isActive: false }
           );
 
-          await this.sendNotice(
-            _activeVoucher.name,
-            `[종료]\n${_activeVoucher.url}`
-          );
+          // await this.sendNotice(
+          //   _activeVoucher.name,
+          //   `[종료]\n${_activeVoucher.url}`
+          // );
         }
       }
 
