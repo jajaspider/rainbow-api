@@ -1,5 +1,5 @@
 require("./shinhan");
-require("./qoo10");
+// require("./qoo10");
 
 const maplestory = require("./maplestory");
 const lostark = require("./lostark");
@@ -74,11 +74,11 @@ class Crawling {
 
     setInterval(async () => {
       await tmon.voucherDetect();
-    }, 30000);
+    }, 60000);
 
     setInterval(async () => {
       await wemakeprice.voucherDetect();
-    }, 30000);
+    }, 60000);
   }
 }
 
