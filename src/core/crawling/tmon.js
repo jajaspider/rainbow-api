@@ -96,6 +96,17 @@ class TMON {
     } catch (e) {
       //
     }
+
+    try {
+      let djjObj = {
+        msg: `${title}\n${text}`,
+        dst: "",
+        key: "d4b80164-72b2-462b-8a54-0927c8f15714",
+      };
+      await axios.post(`https://bmonbot.djjproject.com/send`, djjObj);
+    } catch (e) {
+      //
+    }
   }
 
   async requestPagenationQuery(url, query) {
@@ -138,11 +149,13 @@ class TMON {
     }, {});
 
     for (const i of _.keys(result)) {
-      let title = i;
+      let title = `#티몬 ${i}`;
       let text = "";
       _.map(result[i], (obj) => {
         if (obj.type === "refresh") {
-          text += `\n[재등록] ${obj.price}원 ${obj.url}`;
+          text += `\n[재등록] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
+        } else if (obj.type === "new") {
+          text += `\n[신규등록] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
         }
       });
       await this.sendNotice(title, text);
@@ -200,6 +213,7 @@ class TMON {
             name: itemName,
             uuid: itemUuid,
             price: itemPrice,
+            stock: dealMax,
             url: itemUrl,
           });
 
@@ -208,6 +222,7 @@ class TMON {
             uuid: itemUuid,
             type: "new",
             price: itemPrice,
+            stock: dealMax,
             url: itemUrl,
           });
         }
@@ -231,6 +246,7 @@ class TMON {
               name: itemName,
               uuid: itemUuid,
               price: itemPrice,
+              stock: dealMax,
               url: itemUrl,
             });
             noticeObj.push({
@@ -238,6 +254,7 @@ class TMON {
               uuid: itemUuid,
               type: "refresh",
               price: itemPrice,
+              stock: dealMax,
               url: itemUrl,
             });
           }
