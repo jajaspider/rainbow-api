@@ -3,8 +3,8 @@ const axios = require("axios");
 const qs = require("querystring");
 
 const Tmon = require("../../models").Tmon;
-const { sendMessage } = require("../../services/theMore/telegram.handler");
-const rabbitmq = require("../rabbitmq");
+const voucherService = require("../../services/voucher.service");
+const { WHITE_LIST } = require("../constants");
 
 /*
 ssg상품권
@@ -17,31 +17,6 @@ ssg상품권
 class TMON {
   constructor() {
     this.vouchers = [];
-    this.whiteList = [
-      "컬쳐랜드",
-      "Google Play",
-      "L.POINT",
-      "엘포인트",
-      "국민관광상품권",
-      "롯데모바일상품권",
-      "H.Point",
-      "현대백화점",
-      "머니트리",
-      "배달의민족",
-      "센골드",
-      "신세계백화점",
-      "신세계상품권",
-      "요기요 상품권",
-      "티몬캐시",
-      "[PAYCO]",
-      "북앤라이프",
-      "도서문화",
-      "온라인문화상품권",
-      "온라인 문화상품권",
-      "컬쳐랜드 상품권",
-      "해피머니",
-      "[문화상품권]",
-    ];
   }
 
   async init() {
@@ -64,49 +39,13 @@ class TMON {
     };
   }
 
-  isWhiteList(voucherName, whiteList) {
-    for (const _whiteList of whiteList) {
+  isWhiteList(voucherName) {
+    for (const _whiteList of WHITE_LIST) {
       if (voucherName.includes(_whiteList)) {
         return true;
       }
     }
     return false;
-  }
-
-  async sendNotice(title, text) {
-    // console.dir({ type: "console 메세지", title, text });
-    try {
-      await sendMessage(text);
-    } catch (e) {
-      //
-    }
-
-    try {
-      let publishObj = {
-        url: text,
-        title: title,
-      };
-      await rabbitmq.assertQueue("notice.financial");
-      await rabbitmq.bindQueue(
-        "notice.financial",
-        rabbitmq.mqConfig.exchange,
-        "notice"
-      );
-      await rabbitmq.sendToQueue("notice.financial", publishObj);
-    } catch (e) {
-      //
-    }
-
-    try {
-      let djjObj = {
-        msg: `${title}\n${text}`,
-        dst: "",
-        key: "d4b80164-72b2-462b-8a54-0927c8f15714",
-      };
-      await axios.post(`https://bmonbot.djjproject.com/send`, djjObj);
-    } catch (e) {
-      //
-    }
   }
 
   async requestPagenationQuery(url, query) {
@@ -156,9 +95,12 @@ class TMON {
           text += `\n[재등록] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
         } else if (obj.type === "new") {
           text += `\n[신규등록] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
+        } else if (obj.type === "price") {
+          text += `\n[가격변동] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
         }
       });
-      await this.sendNotice(title, text);
+      await voucherService.sendNotice(title, text);
+      // await this.sendNotice(title, text);
     }
   }
 
@@ -182,7 +124,7 @@ class TMON {
       items = _.uniqBy(items, "dealNo");
       // 화이트리스트가 아니라면 제거
       items = _.filter(items, (item) =>
-        this.isWhiteList(_.get(item, "titleName").trim(), this.whiteList)
+        this.isWhiteList(_.get(item, "titleName").trim())
       );
 
       for (let _item of items) {
@@ -258,6 +200,36 @@ class TMON {
               url: itemUrl,
             });
           }
+          // 가격변동
+          else if (_.get(targetVoucher, "price") !== itemPrice) {
+            await Tmon.findOneAndUpdate(
+              { uuid: itemUuid },
+              {
+                name: itemName,
+                uuid: itemUuid,
+                price: itemPrice,
+                url: itemUrl,
+                isActive: true,
+              }
+            );
+            // 가격변동 알림쏘기
+            console.dir({
+              name: itemName,
+              uuid: itemUuid,
+              price: itemPrice,
+              stock: dealMax,
+              url: itemUrl,
+            });
+
+            noticeObj.push({
+              name: itemName,
+              uuid: itemUuid,
+              type: "price",
+              price: itemPrice,
+              stock: dealMax,
+              url: itemUrl,
+            });
+          }
         }
       }
 
@@ -282,7 +254,6 @@ class TMON {
       this.vouchers = JSON.parse(JSON.stringify(tmon));
     } catch (e) {
       //
-      console.dir(e);
     }
 
     try {
