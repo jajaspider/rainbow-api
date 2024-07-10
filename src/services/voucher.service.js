@@ -7,7 +7,7 @@ const voucherService = {
   sendNotice: async (title, text) => {
     // console.dir({ type: "console 메세지", title, text });
     try {
-      await sendMessage(text);
+      await sendMessage(title, text);
     } catch (e) {
       //
     }
