@@ -71,6 +71,8 @@ class WEMAKEPRICE {
           text += `\n[신규등록] ${obj.price}원\n${obj.url}`;
         } else if (obj.type === "price") {
           text += `\n[가격변동] ${obj.price}원\n${obj.url}`;
+        } else if (obj.type === "soldout") {
+          text += `\n[종료] ${obj.price}원\n${obj.url}`;
         }
       });
       await voucherService.sendNotice(title, text);
@@ -205,10 +207,13 @@ class WEMAKEPRICE {
             { isActive: false }
           );
 
-          // await this.sendNotice(
-          //   _activeVoucher.name,
-          //   `[종료]\n${_activeVoucher.url}`
-          // );
+          noticeObj.push({
+            name: _activeVoucher.name,
+            uuid: _activeVoucher.uuid,
+            type: "soldout",
+            price: _activeVoucher.price,
+            url: _activeVoucher.url,
+          });
         }
       }
 

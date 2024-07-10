@@ -97,6 +97,8 @@ class TMON {
           text += `\n[신규등록] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
         } else if (obj.type === "price") {
           text += `\n[가격변동] ${obj.price}원 (남은수량 ${obj.stock})\n${obj.url}`;
+        } else if (obj.type === "soldout") {
+          text += `\n[종료] ${obj.price}원\n${obj.url}`;
         }
       });
       await voucherService.sendNotice(title, text);
@@ -247,6 +249,14 @@ class TMON {
             { uuid: _activeVoucher.uuid },
             { isActive: false }
           );
+
+          noticeObj.push({
+            name: _activeVoucher.name,
+            uuid: _activeVoucher.uuid,
+            type: "soldout",
+            price: _activeVoucher.price,
+            url: _activeVoucher.url,
+          });
         }
       }
 
