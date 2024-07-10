@@ -133,7 +133,11 @@ class TMON {
         let itemName = _.get(_item, "titleName", "상품명").trim();
 
         let itemUuid = _.get(_item, "dealNo");
-        let itemPrice = _.get(_item, "priceInfo.price");
+
+        let itemPrice =
+          _.get(_item, "discountPrice.price") ||
+          _.get(_item, "priceInfo.discountInfos.immediately.price") ||
+          _.get(_item, "priceInfo.price");
         let itemUrl = `https://www.tmon.co.kr/deal/${itemUuid}`;
         let dealMax = _.get(_item, "dealMax.stockCount");
         // 재고가 25개 미만이라면 알림과 연관없음
