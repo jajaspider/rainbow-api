@@ -13,12 +13,15 @@ const soul = require("./soul");
 const ncncCheckStatus = require("./ncnc");
 const tmon = require("./tmon");
 const wemakeprice = require("./wemakeprice");
+const ppomppuNaver = require("./ppomppu_naver");
 
 class Crawling {
   constructor() {}
   async init() {
     await maplestory.init();
     await lostark.init();
+    await ppomppuNaver.init();
+
     // await happymbook.init();
     // await coza.init();
     // await marabox.init();
@@ -39,6 +42,10 @@ class Crawling {
     this.lostarkNotice = setInterval(async () => {
       await lostark.crawlingNotice();
     }, 5000);
+
+    this.ppomppuNaverNotice = setInterval(async () => {
+      await ppomppuNaver.crawlingNotice();
+    }, 60000);
 
     // this.happymbookNotice = setInterval(async () => {
     //   await happymbook.crawling();
