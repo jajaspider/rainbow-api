@@ -1,5 +1,5 @@
 require("./shinhan");
-require("./qoo10");
+// require("./qoo10");
 
 const maplestory = require("./maplestory");
 const lostark = require("./lostark");
@@ -11,19 +11,26 @@ const julingo3 = require("./julingo3");
 const tbtro = require("./tbtro");
 const soul = require("./soul");
 const ncncCheckStatus = require("./ncnc");
+const tmon = require("./tmon");
+const wemakeprice = require("./wemakeprice");
+const ppomppuNaver = require("./ppomppu_naver");
 
 class Crawling {
   constructor() {}
   async init() {
     await maplestory.init();
     await lostark.init();
+    await ppomppuNaver.init();
+
     // await happymbook.init();
     // await coza.init();
-    await marabox.init();
+    // await marabox.init();
     // await horizon.init();
     // await julingo3.init();
-    await tbtro.init();
-    await soul.init();
+    // await tbtro.init();
+    // await soul.init();
+    await tmon.init();
+    await wemakeprice.init();
 
     this.maplestoryNotice = setInterval(async () => {
       await maplestory.crawlingNotice();
@@ -36,6 +43,10 @@ class Crawling {
       await lostark.crawlingNotice();
     }, 5000);
 
+    this.ppomppuNaverNotice = setInterval(async () => {
+      await ppomppuNaver.crawlingNotice();
+    }, 60000);
+
     // this.happymbookNotice = setInterval(async () => {
     //   await happymbook.crawling();
     // }, 10000);
@@ -44,9 +55,9 @@ class Crawling {
     //   await coza.crawling();
     // }, 10000);
 
-    this.maraboxNotice = setInterval(async () => {
-      await marabox.crawling();
-    }, 20000);
+    // this.maraboxNotice = setInterval(async () => {
+    //   await marabox.crawling();
+    // }, 20000);
 
     // this.horizonNotice = setInterval(async () => {
     //   await horizon.crawling();
@@ -56,16 +67,24 @@ class Crawling {
     //   await julingo3.crawling();
     // }, 10000);
 
-    this.tbtroNotice = setInterval(async () => {
-      await tbtro.crawling();
-    }, 10000);
+    // this.tbtroNotice = setInterval(async () => {
+    //   await tbtro.crawling();
+    // }, 10000);
 
-    this.soulNotice = setInterval(async () => {
-      await soul.crawling();
-    }, 10000);
+    // this.soulNotice = setInterval(async () => {
+    //   await soul.crawling();
+    // }, 10000);
 
     setInterval(async () => {
       await ncncCheckStatus();
+    }, 60000);
+
+    setInterval(async () => {
+      await tmon.voucherDetect();
+    }, 60000);
+
+    setInterval(async () => {
+      await wemakeprice.voucherDetect();
     }, 60000);
   }
 }

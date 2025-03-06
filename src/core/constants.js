@@ -26,6 +26,35 @@ const ERROR_CODE = {
   },
 };
 
+const WHITE_LIST = [
+  "컬쳐랜드",
+  "Google Play",
+  "L.POINT",
+  "엘포인트",
+  "국민관광상품권",
+  "롯데모바일상품권",
+  "H.Point",
+  "현대백화점",
+  "머니트리",
+  "배달의민족",
+  "센골드",
+  "신세계백화점",
+  "신세계상품권",
+  "요기요 상품권",
+  "티몬캐시",
+  "[PAYCO]",
+  "북앤라이프",
+  "도서문화",
+  "온라인문화상품권",
+  "온라인 문화상품권",
+  "컬쳐랜드 상품권",
+  "해피머니",
+  "[문화상품권]",
+  "교통페이",
+  "컬쳐캐쉬",
+  "에그머니",
+];
+
 class RainbowError extends Error {
   constructor(payload) {
     super(payload.error.message);
@@ -39,4 +68,5 @@ class RainbowError extends Error {
 module.exports = {
   ERROR_CODE,
   RainbowError,
+  WHITE_LIST,
 };
